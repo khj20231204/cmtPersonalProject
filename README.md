@@ -1,13 +1,13 @@
-1. # ITWILL 심화반 TEAM POJECT 📒
+1. # ITWILL 심화반 TEAM POJECT 🔜   
     <img src="/readmeImg/cmt.png" width="100%">   
 
-    Centralized Manufacturing & Tracking
+    Centralized Manufacturing & Tracking   
 
-    연결 - <a href="15.165.75.24:8080" style="font-weight:bold;cursor:pointer;text-decoration:underline">팀프로젝트 수정 사이트</a>
+    연결 - <a href="15.165.75.24:8080" style="font-weight:bold;cursor:pointer;text-decoration:underline">팀프로젝트 수정 사이트</a>   
 
-    <span style='color:red;font-weight:bold'>CMT Co., Ltd.</span>
+    <span style='color:red;font-weight:bold'>CMT Co., Ltd.</span>   
     
-1. # Tech Stack🖥️
+1. # Tech Stack 🔜   
 
 - FRONTEND   
 HTML5, CSS3, JAVASCRIPT, JASPER, TOAST UI   
@@ -36,18 +36,18 @@ AWS CI / CD
     ![Spring Security](https://img.shields.io/badge/Spring%20Security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)
     ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=aws&logoColor=white)
 
-1. # Member / Period🧑‍🤝‍🧑
+1. # Member / Period 🔜
     1명 / 2개월   
     Team프로젝트인 CMT PROJECT(https://github.com/khj20231204/cmtProject) 에서 개선 해야할 부분과 기능을 추가하여 완성한 개인 프로젝트.   
 
     *MES파트에서 공정 부분만 제가 했고, 작업지시서와 LOT추적은 다른 팀원이 했지만 흐름상 추가함   
 
-2. # MES🎆
+2. # MES 🔜
     MES는 Manufacturing Execution System의 약자로, 제조 실행 시스템이라고 번역됩니다. 원자재부터 완제품까지 제조 과정을 실시간으로 모니터링, 추적, 문서화, 제어하는 소프트웨어 시스템입니다. 생산 계획의 실행, 공정 추적, 품질 관리, 작업 지시 관리 등을 지원하여 생산 효율성을 높이고 품질을 향상시키는 데 도움을 줍니다.    
 
-3. # FLOW CHART
+3. # FLOW CHART 🔜
     
-4. # SUBJECT🚓
+4. # SUBJECT 🔜
     __자동차 프레임 생산__ 을 주제로 MES를 구성했습니다.   
     자동차 프레임은 자동차의 구조적 뼈대이며, 차체 조립의 기반이 됩니다. 프레임 공정은 일반적으로 다음과 같은 단계를 포함합니다.   
 
@@ -68,17 +68,17 @@ AWS CI / CD
     ✅ 공정 현황 Recod   
     공정이 이루어지는 모든 단계를 기록했다가 재로딩시 이전 상황가 일치하게 로딩되는 페이지 구현.   
     
-6. # DETAIL ROLE PART🔍   
+6. # DETAIL ROLE PART 🔍   
     [수주/발주](https://github.com/khj20231204/cmtPersonalProject/wiki/so_po)
 
     [BOM 기준 정보](https://github.com/khj20231204/cmtPersonalProject/wiki/Bom_info)
 
     [공정](https://github.com/khj20231204/cmtPersonalProject/wiki/prc)
 
-7. # GitHub Project🪶
+7. # GitHub Project 🔜
     Main, Develop, pull request, merge
 
-8. # AWS CI/CD🪁
+8. # AWS CI/CD 🔜
 
     <img src="../../imgs/LESSON/SPRING(Lesson)/server_error.png" style="border:3px solid black;border-radius:9px;width:300px">   
 
