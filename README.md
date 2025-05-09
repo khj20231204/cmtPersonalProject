@@ -3,7 +3,9 @@
 
     Centralized Manufacturing & Tracking
 
-    <span style='color:red;font:bold'>CMT Co., Ltd.</span>
+    연결 - <a href="15.165.75.24:8080" style="font-weight:bold;cursor:pointer;text-decoration:underline">팀프로젝트 수정 사이트</a>
+
+    <span style='color:red;font-weight:bold'>CMT Co., Ltd.</span>
     
 1. # Tech Stack
 
