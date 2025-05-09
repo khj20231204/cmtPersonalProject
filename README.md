@@ -1,6 +1,5 @@
 1. # ITWILL 심화반 TEAM POJECT🔜   
     <img src="/readmeImg/cmt.png" width="100%">   
-
     Centralized Manufacturing & Tracking   
 
     연결 - <a href="http://15.165.75.24:8080/login" style="font-weight:bold;cursor:pointer;text-decoration:underline">배포 사이트</a>   
@@ -24,6 +23,9 @@ MyBatis / Gradle
 TOMCAT : v 10.1.40   
 GitHub - Project   
 AWS CI / CD   
+
+- Deploy
+AWS EC2 : TOMCAT / ORACLE
 
     ![HTML5](https://img.shields.io/badge/html5-red.svg?style=for-the-badge&logo=html5&logoColor=white)
     ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
