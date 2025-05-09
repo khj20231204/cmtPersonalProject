@@ -3,7 +3,7 @@
 
     Centralized Manufacturing & Tracking   
 
-    연결 - <a href="http://15.165.75.24:8080" style="font-weight:bold;cursor:pointer;text-decoration:underline">배포 사이트</a>   
+    연결 - <a href="http://15.165.75.24:8080/login" style="font-weight:bold;cursor:pointer;text-decoration:underline">배포 사이트</a>   
 
     CMT Co., Ltd.   
     
