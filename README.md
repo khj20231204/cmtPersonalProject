@@ -125,4 +125,4 @@ AWS EC2 : TOMCAT / ORACLE
     <img src="../../imgs/LESSON/SPRING(Lesson)/server_error.png" style="border:3px solid black;border-radius:9px;width:300px">   
 
 11.  # REFLECTION✍️
-    BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   
+        BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   

@@ -118,14 +118,12 @@
 	<!-- 사용자의 가장 최근 출근 ATD_NO 조회 -->
 	<select id="findLatestCheckInAtdNo" resultType="Long">
 		SELECT ATD_NO
-		FROM (
-			SELECT ATD_NO
-			FROM ATTENDS
-			WHERE EMP_NO = #{empNo}
-				AND ATD_TYPE = 'ATT001'
-			ORDER BY ATD_DATE DESC
-		)
-		WHERE ROWNUM = 1
+	    FROM ATTENDS
+	    WHERE EMP_NO = #{empNo}
+	      AND ATD_TYPE = 'ATT001'
+	      AND ATD_DATE >= SYSDATE - INTERVAL '1' DAY
+	    ORDER BY ATD_DATE DESC
+	    FETCH FIRST 1 ROWS ONLY
 	</select>
 	
     <!-- 오늘 퇴근 했는지 조회 -->

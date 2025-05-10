@@ -53,10 +53,10 @@ public class MainController {
 		}
 		//결재대기중인 문서 갯수
 		String empId = principal.getUser().getEmpId();
-		//int pendingApprovalCount = docFormService.countPendingDocumentsByEmpId(empId);
-		//int myDraftCount = docFormService.myDraftCount(empId);
-		//model.addAttribute("pendingApprovalCount",pendingApprovalCount);
-		//model.addAttribute("myDraftCount",myDraftCount);
+		int pendingApprovalCount = docFormService.countPendingDocumentsByEmpId(empId);
+		int myDraftCount = docFormService.myDraftCount(empId);
+		model.addAttribute("pendingApprovalCount",pendingApprovalCount);
+		model.addAttribute("myDraftCount",myDraftCount);
 		
 		//공지사항
 		List<NoticeDTO> noticeList = noticeService.getAllNoticesWithNames();

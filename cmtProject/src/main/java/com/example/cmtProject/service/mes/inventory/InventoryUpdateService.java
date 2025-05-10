@@ -51,8 +51,10 @@ public class InventoryUpdateService {
     /**
      * 생산완료 처리 - LOT 상태가 CP로 변경될 때 호출
      */
-    @Transactional
+  
     public void completeProduction(Map<String, Object> lotInfo) {
+    	
+    	/*
         String parentCode = (String) lotInfo.get("parentPdtCode");
         String bomQty = (String) lotInfo.get("bomQty");
         String childLotCode = (String) lotInfo.get("childLotCode");
@@ -77,12 +79,15 @@ public class InventoryUpdateService {
                 throw new RuntimeException("제품 재고 차감 실패: " + result.get("message"));
             }
         }
+        */
     }
     
     /**
      * 원자재 FIFO 차감
      */
     private void deductMaterialFIFO(String mtlCode, long qty, String userId, String lotNo, String woCode) {
+    	
+    	/*
         long remainingToDeduct = qty;
         long totalDeducted = 0;
         
@@ -158,18 +163,22 @@ public class InventoryUpdateService {
             log.error("자재 {} 차감 실패: {}만큼 부족", mtlCode, remainingToDeduct);
             throw new RuntimeException("자재 " + mtlCode + " 재고가 " + remainingToDeduct + "만큼 부족합니다.");
         }
+        */
     }
     
     /**
      * 원자재 계획재고 차감
      */
     private void deductAllocatedMaterialInventory(String mtlCode, long qty, String userId) {
+    	
+    	/*
         Map<String, Object> params = new HashMap<>();
         params.put("mtlCode", mtlCode);
         params.put("allocatedQty", String.valueOf(-qty)); // 음수로 차감
         params.put("updatedBy", userId);
         
         Ium.updateMaterialAllocatedQty(params);
+        */
     }
     
     /**
@@ -202,8 +211,10 @@ public class InventoryUpdateService {
     /**
      * 생산계획 대비 자재/제품 할당 수량 업데이트 (FIFO 적용)
      */
-    @Transactional
+   
     public void updateAllocatedQuantities(Map<String, Object> params) {
+    	
+    	/*
         String soCode = (String) params.get("soCode");
         Long soQty = (Long) params.get("soQty");
         
@@ -223,12 +234,15 @@ public class InventoryUpdateService {
         // 2. 제품 재고 업데이트 (기존 방식)
         int productUpdated = Ium.updateProductAllocatedQty(params);
         log.info("제품 재고 업데이트: {} 건", productUpdated);
+        */
     }
     
     /**
      * FIFO 방식으로 자재 재고 할당
      */
     private void allocateMaterialsFIFO(List<Map<String, Object>> bomItems, Long soQty, String userId) {
+    	
+    	/*
         for (Map<String, Object> item : bomItems) {
             String itemType = (String) item.get("ITEM_TYPE");
             if ("MATERIAL".equals(itemType)) {
@@ -242,12 +256,15 @@ public class InventoryUpdateService {
                 allocateMaterialFIFO(mtlCode, requiredQty, userId);
             }
         }
+        */
     }
     
     /**
      * 단일 자재에 대한 FIFO 할당
      */
     private void allocateMaterialFIFO(String mtlCode, long requiredQty, String userId) {
+    	
+    	/*
         long remainingToAllocate = requiredQty;
         long totalAllocated = 0;
         
@@ -303,13 +320,15 @@ public class InventoryUpdateService {
         if (remainingToAllocate > 0) {
             log.warn("자재 {} 할당 부족: {}만큼 부족", mtlCode, remainingToAllocate);
         }
+        */
     }
     
     /**
      * 생산완료된 제품/반제품 입고 처리
      */
-    @Transactional
+    //@Transactional
     public void receiveProductionItem(Map<String, Object> params) {
+    	/*
         String pdtCode = (String) params.get("pdtCode");
         String woQty = (String) params.get("woQty");
         String childLotCode = (String) params.get("childLotCode");
@@ -366,5 +385,6 @@ public class InventoryUpdateService {
         pprsmapper.insertStock(stockParams);
         
         log.info("생산완료품 입고 완료 - 제품: {}, 수량: {}", pdtCode, woQty);
+        */
     }
 }
