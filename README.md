@@ -37,16 +37,16 @@ AWS EC2 : TOMCAT / ORACLE
     ![Spring Security](https://img.shields.io/badge/Spring%20Security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)
     ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=aws&logoColor=white)
 
-1. # Member / Period🔜
+3. # Member / Period🔜
     1명 / 2개월(3/5 ~ 5/8)   
     Team프로젝트인 CMT PROJECT(https://github.com/khj20231204/cmtProject) 에서 개선 해야할 부분과 기능을 추가하여 완성한 개인 프로젝트.   
 
-2. # MES🔜
+4. # MES🔜
     MES는 Manufacturing Execution System의 약자로, 제조 실행 시스템이라고 번역됩니다. 원자재부터 완제품까지 제조 과정을 실시간으로 모니터링, 추적, 문서화, 제어하는 소프트웨어 시스템입니다. 생산 계획의 실행, 공정 추적, 품질 관리, 작업 지시 관리 등을 지원하여 생산 효율성을 높이고 품질을 향상시키는 데 도움을 줍니다.    
 
-3. # FLOW CHART🔜
+5. # FLOW CHART🔜
     
-4. # SUBJECT🔜
+6. # SUBJECT🔜
     __자동차 프레임 생산__ 을 주제로 MES를 구성했습니다.   
     자동차 프레임은 자동차의 구조적 뼈대이며, 차체 조립의 기반이 됩니다. 프레임 공정은 일반적으로 다음과 같은 단계를 포함합니다.   
 
@@ -57,7 +57,7 @@ AWS EC2 : TOMCAT / ORACLE
 
     이 모든 과정은 높은 정밀도와 추적성이 요구되며, 수많은 부품과 설비가 유기적으로 연결되어 있습니다.  
 
-5. # ROLE PART🔜
+7. # ROLE PART🔜
 
     ✅ 수주 / 발주   
     수주 
@@ -75,19 +75,40 @@ AWS EC2 : TOMCAT / ORACLE
     *로그인/공지사항/작업지시서/LOT추적은 다른 팀원이 함, 사이트 흐름상 가져옴   
     </span>   
 
-6. # DETAIL ROLE PART🔍   
+8. # DETAIL ROLE PART🔍   
     [수주/발주](https://github.com/khj20231204/cmtPersonalProject/wiki/so_po)
 
     [BOM 기준 정보](https://github.com/khj20231204/cmtPersonalProject/wiki/Bom_info)
 
     [공정](https://github.com/khj20231204/cmtPersonalProject/wiki/prc)
 
-7. # GitHub Project🔜
+9. # GitHub Project🔜
     Main, Develop, pull request, merge
 
-8. # AWS CI/CD🔜
+10. # AWS DEPLOY
+    EC2에 오라클을 설치 후 DB데이터(테이블, 시퀀스, INDEX, INSERT INTO로 모두 새로 생성)를 복사함 -> EC2 프리티어는 21C를 설치하기에 불가능한 환경 -> 11g를 설치함 -> 로컬에서는 EC2의 오라클(11g)을 연결해서 사용해도 아무 문제가 없는데 배포를 하면 "HTTP 상태  404 – 찾을 수 없음"에러가 뜸
+    문제점 1) 배포를 한 경우 로딩이 되면 CPU 사용률이 10%를 넘게 되는데 문제는 메모리가 1G밖에 없어서 EC2가 다운 돼버림(20분 마다 한번씩 통신이 끊김 - 이때는 진짜 와..) -> 해결책)SWAP페이지 생성   
+    여전히 배포한 페이지는 정상 동작이 되지 않음
+    문제점 2) 보안 정책에 오라클 포트를 추가하지 않았음 -> 해결책) 오라클 포트 1521만 따로 추가해 줌
+    여전히 배포한 페이지는 정상 동작이 되지 않음
+    문제점 3) 로컬에서 EC2의 오라클에 접속이 되지 않음 -> 리스너가 실행되지 않은 상태 였음 -> 해결책) sudo su - oracle로 접속해서 sqlplus에서 startup를 한 후 다시 lsnrctl start를 함
+    여전히 배포한 페이지는 정상 동작이 되지 않음
+    문제점 4) 하나의 EC2에 배포와 DB접을 동시에 해서 발생하는 문제라고 생각함 -> 해결책)EC2를 새로 하나 만들어 DB접속 EC2와 배포 EC2를 따로 둠
+    여전히 배포한 페이지는 정상 동작 하지 않음
+    문제점 5) 21C로 개발한 완성된 프로젝트를 11g로 변경한 경우 다음과 같은 문제점이 발생할 수 있음        
+       (1)JSON 타입 : 21c에서는 JSON 컬럼 지원 - 11g는 없음 → CLOB에 JSON 저장   
+       해결책) => NOTICE테이블에 CONTENT 항목을 VARCHAR로 변경 후 HTML태그가 있는 구문을 하나씩 직접 삽입   
+       (2)FETCH FIRST n ROWS ONLY	12c SQL 표준 페이징 - 11g에서는 ROWNUM 방식으로 변경 필요
+       해결책) => AttendsMapper.xml, DocumentMapper.xml, WorkOrderMapper.xml에서 FETCH FIRST를 사용하고 있었고 전부 서브쿼리로 변경 후 ROWNUM적용
+
+    __마지막으로 발견한 문제점__ JPA의 identity 컬럼 : 21c부터 지원되는 자동 증가 방식 => 11g에서는 시퀀스 + 트리거 방식으로 변경 필요 => JPA 구문이 한 두 개도 아니고.. 여기서 포기함
+    : 도대체 11g를 설치한 오라클이 로컬에서 접속했을 때는 왜 아무런 문제없이 잘 실행이 되었는지 모르겠음
+
+    => 현재 DB는 학원 DB를 사용 중이고 배포만 EC2를 이용하고 있습니다.
+    
+10. # AWS CI/CD🔜
 
     <img src="../../imgs/LESSON/SPRING(Lesson)/server_error.png" style="border:3px solid black;border-radius:9px;width:300px">   
 
-9.  # REFLECTION✍️
+11.  # REFLECTION✍️
     BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   
