@@ -38,7 +38,7 @@ AWS EC2 : TOMCAT / ORACLE
     ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=aws&logoColor=white)
 
 1. # Member / Period🔜
-    1명 / 2개월   
+    1명 / 2개월(3/5 ~ 5/8)   
     Team프로젝트인 CMT PROJECT(https://github.com/khj20231204/cmtProject) 에서 개선 해야할 부분과 기능을 추가하여 완성한 개인 프로젝트.   
 
 2. # MES🔜
