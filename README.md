@@ -112,10 +112,11 @@ AWS EC2 : TOMCAT / ORACLE
        (2)FETCH FIRST n ROWS ONLY	12c SQL 표준 페이징 - 11g에서는 ROWNUM 방식으로 변경 필요   
        해결책) AttendsMapper.xml, DocumentMapper.xml, WorkOrderMapper.xml에서 FETCH FIRST를 사용하고 있었고 전부 서브쿼리로 변경 후 ROWNUM적용
 
-    __마지막으로 발견한 문제점__    
-        JPA의 identity 컬럼 : 21c부터 지원되는 자동 증가 방식, 11g에서는 시퀀스 + 트리거 방식으로 변경 필요   
-        포기) JPA 구문이 한두 개도 아니고.. 여기서 포기함   
-        : 로컬에서 11g를 설치한 EC2오라클에 접속했을 때는 왜 정상 동작했는지 모르겠습니다.   
+    __마지막으로 발견한 문제점__
+    
+        `JPA의 identity 컬럼 : 21C부터 지원되는 자동 증가 방식, 11g에서는 시퀀스 + 트리거 방식으로 변경 필요   
+        포기) JPA 구문이 한두 개도 아니고.. 여기서 오라클을 EC2로 접속하는 부분은 하지 않기로 함   
+        : 로컬에서 11g를 설치한 EC2오라클에 접속했을 때는 왜 정상 동작했는지 모르겠습니다.` 
     
     ➮ 현재 DB는 학원 DB를 사용 중이고 배포만 EC2를 이용하고 있습니다.   
     
