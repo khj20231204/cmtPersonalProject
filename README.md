@@ -106,17 +106,17 @@ AWS EC2 : TOMCAT / ORACLE
     
     __문제점 5)__ 21C로 개발한 완성된 프로젝트를 11g로 변경한 경우 다음과 같은 문제점이 발생할 수 있음
     
-       (1)JSON 타입 : 21c에서는 JSON 컬럼 지원 - 11g는 없음 → CLOB에 JSON 저장   
-       해결책) NOTICE테이블에 CONTENT 항목을 VARCHAR로 변경 후 HTML태그가 있는 구문을 하나씩 직접 삽입
+       (1)JSON 타입 : 21C에서는 JSON 컬럼 지원 - 11g는 없음 → CLOB에 JSON 저장   
+       해결책) NOTICE테이블에서 HTML태그가 있는 CONTENT 항목을 하나씩 직접 삽입   
     
-       (2)FETCH FIRST n ROWS ONLY	12c SQL 표준 페이징 - 11g에서는 ROWNUM 방식으로 변경 필요   
+       (2)FETCH FIRST n ROWS ONLY 구문은 12C SQL 표준 페이징 - 11g에서는 ROWNUM 방식으로 변경 필요   
        해결책) AttendsMapper.xml, DocumentMapper.xml, WorkOrderMapper.xml에서 FETCH FIRST를 사용하고 있었고 전부 서브쿼리로 변경 후 ROWNUM적용
 
     __마지막으로 발견한 문제점__
     
-        `JPA의 identity 컬럼 : 21C부터 지원되는 자동 증가 방식, 11g에서는 시퀀스 + 트리거 방식으로 변경 필요   
+        JPA의 identity 컬럼 : 21C부터 지원되는 자동 증가 방식, 11g에서는 시퀀스 + 트리거 방식으로 변경 필요   
         포기) JPA 구문이 한두 개도 아니고.. 여기서 오라클을 EC2로 접속하는 부분은 하지 않기로 함   
-        : 로컬에서 11g를 설치한 EC2오라클에 접속했을 때는 왜 정상 동작했는지 모르겠습니다.` 
+        : 로컬에서 11g를 설치한 EC2오라클에 접속했을 때는 왜 정상 동작했는지 모르겠습니다.   
     
     ➮ 현재 DB는 학원 DB를 사용 중이고 배포만 EC2를 이용하고 있습니다.   
     
