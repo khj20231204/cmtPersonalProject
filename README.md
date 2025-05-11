@@ -45,6 +45,8 @@ AWS EC2 : TOMCAT / ORACLE
     MES는 Manufacturing Execution System의 약자로, 제조 실행 시스템이라고 번역됩니다. 원자재부터 완제품까지 제조 과정을 실시간으로 모니터링, 추적, 문서화, 제어하는 소프트웨어 시스템입니다. 생산 계획의 실행, 공정 추적, 품질 관리, 작업 지시 관리 등을 지원하여 생산 효율성을 높이고 품질을 향상시키는 데 도움을 줍니다.    
 
 5. # FLOW CHART🔜
+    팀프로젝트 전체 순서도   
+    <img src="readmeImg/flow_chart.png" style="border:3px solid black;border-radius:9px;width:600px">   
 
 6. # SUBJECT🔜
     __자동차 프레임 생산__ 을 주제로 MES를 구성했습니다.   
@@ -84,10 +86,10 @@ AWS EC2 : TOMCAT / ORACLE
 
    [공정](https://github.com/khj20231204/cmtPersonalProject/wiki/PRC)
 
-10. # GitHub Project🔜
+9.  # GitHub Project🔜
     Main, Develop, pull request, merge   
    
-11. # AWS DEPLOY🔜
+10. # AWS DEPLOY🔜
     EC2에 오라클을 설치 후 DB데이터(테이블, 시퀀스, INDEX, INSERT INTO로 모두 새로 생성)를 복사함 → EC2 프리티어는 21C를 설치하기에 불가능한 환경 → 11g를 설치함 → 로컬에서는 EC2의 오라클(11g)을 연결해서 사용해도 아무 문제가 없는데 배포를 하면 "HTTP 상태  404 – 찾을 수 없음" 또는 "The requested URL was not found on this server" 에러가 뜸
     
     __문제점 1)__ 배포를 한 경우 로딩이 되면 CPU 사용률이 10%를 넘게 되는데 문제는 메모리가 1G밖에 없어서 EC2가 다운 돼버림(20분 마다 한번씩 통신이 끊김) → 해결책) SWAP페이지 생성
@@ -122,7 +124,7 @@ AWS EC2 : TOMCAT / ORACLE
     
     ➮ 현재 DB는 학원 DB를 사용 중이고 배포만 EC2를 이용하고 있습니다.   
     
-10. # AWS CI/CD🔜
+11. # AWS CI/CD🔜
 
     AWS의 CI/CD는 CodeBuild + CodeDeploy + CodePipeline 조합을 통해 전체 개발부터 배포까지 자동화할 수 있도록 지원합니다.   
     <img src="readmeImg/aws_info.png" style="border:3px solid black;border-radius:9px;width:300px">   
@@ -145,7 +147,7 @@ AWS EC2 : TOMCAT / ORACLE
     </tr>
     </table>
 
-    build와 deploy가 실행될 때 buildspec.yml, appspec.yml, stop_tomcat.sh, start_tomcat.sh 해당 파일들이 실행되는 일련의 연속적이 과정입니다.    CodePipeline은 새로운 커밋이나 빌드 결과물(아티팩트)이 올라왔는지 자동 감지하는 역할을 합니다. 그렇기 때문에 GitHub와 CodeBuild 사이에, CodeBuild 이후 S3와 CodeDeploy사이에 각각 CodePipeline이 관여하게 됩니다.   
+    build와 deploy가 실행될 때 buildspec.yml, appspec.yml, stop_tomcat.sh, start_tomcat.sh 해당 파일들이 실행되는 일련의 연속적인인 과정입니다.    CodePipeline은 새로운 커밋이나 빌드 결과물(아티팩트)이 올라왔는지 자동 감지하는 역할을 합니다. 그렇기 때문에 GitHub와 CodeBuild 사이에, CodeBuild 이후 S3와 CodeDeploy사이에 각각 CodePipeline이 관여하게 됩니다.   
     각 과정마다 IAM의 역할과 정책이 적용되는데 JSON파일 설정이 좀 까다롭습니다.
 
     요약:
@@ -156,14 +158,14 @@ AWS EC2 : TOMCAT / ORACLE
     : GitHub 소스를 가져온다 => 결과값 : SourceArtifact   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
     __CodeBuild (Build Stage)__   
-    : buildspec.yml 실행, myapps.war파일 생성 => 결과값 : BuildArtifact   
+    : buildspec.yml 실행 → myapp.war파일 생성 => 결과값 : BuildArtifact   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
     __S3에 아티팩트 저장__   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
     __CodePipeline (Deploy Stage)__   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
-    __CodeDeploy (ec2에 배포)__   
-    : appsec.yml 실행(stop_tomcat.sh 실행 → 톰캣 정지 → myapp.war를 /usr/local/tomcat/webapps/에 복사 → start_tomcat.sh 실행 => myapp.war를 ROOT.war로 변경 → 톰캣 재시작 : 서버EC2에 배포)   
+    __CodeDeploy (서버버에 배포)__   
+    : appsec.yml 실행(stop_tomcat.sh 실행 → 톰캣 정지 → myapp.war를 /usr/local/tomcat/webapps/에 복사 => start_tomcat.sh 실행 → myapp.war를 ROOT.war로 변경 → 톰캣 재시작 : 서버EC2에 배포)   
 
-11.  # REFLECTION✍️
+12.  # REFLECTION✍️
         BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   
