@@ -1216,7 +1216,10 @@
 					width: 120,
 					sortable: true, 
 					filter: 'text',
-					align: "center" 
+					align: "center",
+					formatter: function({ value }) {
+					       return value === '2000-01-01' ? '' : value;
+					   }
 	            },
 				{
 	                header: '작업 종료 시간',

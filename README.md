@@ -124,7 +124,46 @@ AWS EC2 : TOMCAT / ORACLE
     
 10. # AWS CI/CD🔜
 
-    <img src="../../imgs/LESSON/SPRING(Lesson)/server_error.png" style="border:3px solid black;border-radius:9px;width:300px">   
+    AWS의 CI/CD는 CodeBuild + CodeDeploy + CodePipeline 조합을 통해 전체 개발부터 배포까지 자동화할 수 있도록 지원합니다.   
+    <img src="readmeImg/aws_info.png" style="border:3px solid black;border-radius:9px;width:300px">   
+
+    ✅  
+    |   서비스   |   설명   |
+    |:---------:|:--------:|
+    | GitHub | 소스 코드 저장소 |
+    | EC2 | 최종 애플리케이션이 배포되고 실행되는 서버 |
+    | S3 | 빌드된 결과물을 임시 저장하는 아티팩트 저장소 |
+    | CodePipeline | 전체 CI/CD 과정을 오케스트레이션하는 파이프라인 서비스 |
+    | CodeBuild | 소스를 컴파일하고 테스트 및 빌드 결과물을 생성 |
+    | CodeDeploy | EC2 인스턴스에 애플리케이션 배포 자동화 |
+    
+    <table>
+    <tr>
+        <td><img src="readmeImg/result_before_2.png" style="border:3px solid black;border-radius:9px;width:200px"></td>
+        <td><img src="readmeImg/result_after_2.png" style="border:3px solid black;border-radius:9px;width:200px"></td>
+        <td><img src="readmeImg/build.png" style="border:3px solid black;border-radius:9px;width:200px"></td>
+    </tr>
+    </table>
+
+    build와 deploy가 실행될 때 buildspec.yml, appspec.yml, stop_tomcat.sh, start_tomcat.sh 해당 파일들이 실행되는 일련의 연속적이 과정입니다.    CodePipeline은 새로운 커밋이나 빌드 결과물(아티팩트)이 올라왔는지 자동 감지하는 역할을 합니다. 그렇기 때문에 GitHub와 CodeBuild 사이에, CodeBuild 이후 S3와 CodeDeploy사이에 각각 CodePipeline이 관여하게 됩니다.   
+    각 과정마다 IAM의 역할과 정책이 적용되는데 JSON파일 설정이 좀 까다롭습니다.
+
+    요약:
+
+    __GitHub (Source)__   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
+    __CodePipeline (Source Stage)__   
+    : GitHub 소스를 가져온다 => 결과값 : SourceArtifact   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
+    __CodeBuild (Build Stage)__   
+    : buildspec.yml 실행, myapps.war파일 생성 => 결과값 : BuildArtifact   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
+    __S3에 아티팩트 저장__   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
+    __CodePipeline (Deploy Stage)__   
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓   
+    __CodeDeploy (ec2에 배포)__   
+    : appsec.yml 실행(stop_tomcat.sh 실행 → 톰캣 정지 → myapp.war를 /usr/local/tomcat/webapps/에 복사 → start_tomcat.sh 실행 => myapp.war를 ROOT.war로 변경 → 톰캣 재시작 : 서버EC2에 배포)   
 
 11.  # REFLECTION✍️
         BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   
