@@ -14,9 +14,9 @@
 	<!-- pagination -->
 	<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.min.js"></script>
 			
-<!-- 	 toast 부트스트랩 기본 --> 
-<!-- 	<link rel="stylesheet" href="https://uicdn.toast.com/tui.grid/latest/tui-grid.css" /> -->
-<!-- 	<script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.min.js"></script> -->
+	<!-- toast 부트스트랩 기본 --> 
+	<link rel="stylesheet" href="https://uicdn.toast.com/tui.grid/latest/tui-grid.css" /> 
+ 	<script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.min.js"></script> 
 		
 	<title>CMT</title>
 	<style>
@@ -384,16 +384,32 @@
 		
 		});
 		
-		 grid.on('afterChange', (ev) => {
-			 
+		grid.on('afterChange', (ev) => {
+			
 			let evValue = ev.changes[0];
 			let rk = evValue.rowKey;
 			let rowData = grid.getRow(rk);
 			let sono = rowData.soNo;
-			
-			//console.log(ev.changes[0]); 
 			//{rowKey: 5, columnName: 'empId', value: '930216', prevValue: '921114'}
+		
+			if(evValue.columnName === 'soQty' || evValue.columnName === 'pdtPrice'){
+							
+				let v = evValue.value?.toString().trim(); 
+				
+				if(isNaN(v) || v === '' ){
+
+					setTimeout(()=>{
+						Swal.fire({
+						  icon: "warning",
+						  title: "해당 컬럼은 숫자만 입력 가능합니다."
+						});
+					},0);
+					
+					return;
+				}
 			
+			}
+						
 			let sendData = {
 				soNo : sono,
 				columnName : evValue.columnName,
@@ -412,7 +428,6 @@
 				}
 			});
 	    });
-
 
 		//===================================== 일반 함수 부분 시작 ===============================================
 		
@@ -488,8 +503,6 @@
 				$("#completeBtn").text("✏️ 수정")
 				$("#searchBtn").text("🔍현재 검색 모드")
 			});
-			
-					
 			
 			//제품명 가져오기
 			$("#pdtCode").change(function(){

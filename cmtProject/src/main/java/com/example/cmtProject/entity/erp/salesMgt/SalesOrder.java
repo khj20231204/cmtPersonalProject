@@ -13,6 +13,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -108,32 +110,6 @@ public class SalesOrder {
 	
 	@Column(name = "QTY_UNIT")
 	private String qtyUnit = "UNC001";
+	
 }
 
-/*
- * @Entity
-public class SalesOrder {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String orderCode;
-
-    @ManyToOne
-    @JoinColumn(name = "clients_id")
-    private Customer clients;  // 거래처 엔티티와 연관
-
-    // 거래처 코드를 직접 수주 테이블에 저장하는 경우 (선택 사항)
-    private String clientsCode; 
-
-    // 거래처명을 가져오는 메서드 (가상 필드)
-    public String getCustomerName() {
-        return this.clients != null ? this.clients.getName() : null;
-    }
-
-    // Getters and Setters...
-}
-
- * 
- * */

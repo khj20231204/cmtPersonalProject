@@ -30,6 +30,7 @@
             background-color: #f4f4f4;
             margin: 20px;
         }
+		
         .container {
             background: white;
             padding: 20px;
@@ -38,21 +39,25 @@
             max-width: 900px;
             margin: auto;
         }
+		
         .form-group {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
+		
         .form-group label {
             width: 120px;
             font-weight: bold;
         }
+		
         .form-group input, .form-group select, .form-group textarea {
             flex: 1;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+		
         .search-btn {
             background-color: #007bff;
             color: white;
@@ -62,16 +67,20 @@
             margin-left: 5px;
             border-radius: 5px;
         }
+		
         .search-btn:hover {
             background-color: #0056b3;
         }
+		
         .date-container {
             display: flex;
             align-items: center;
         }
+		
         .date-container input {
             flex: 1;
         }
+		
         .calendar-btn {
             background-color: #007bff;
             color: white;
@@ -83,36 +92,40 @@
         }
 		
 		.custom-modal-size {
-	        max-width: 900px; /* 원하는 너비로 설정 */
+	    	max-width: 900px; /* 원하는 너비로 설정 */
 	        width: 90%; /* 반응형 적용 */
 	    }
 		
 		.selecedRowClass {
 		    background-color:aliceblue !important;
 		    color: white;
-		  }
+		}
+		  
+		.error {
+			color: red;
+		    font-size: 0.9em;
+			margin-left: 150px;
+		}
         
-        .searchBtn { background:dodgerblue; color: white; }
-	    .requestBtn { background: purple; color: white; }
-	    .completeBtn { background: green; color: white; }
-	    .cancelBtn { background: red; color: white; }
-	    .excelBtn { background: darkblue; color: white; }
-	    .helpBtn { background: orange; color: white; }
     </style>
 	</head>
 
 	<body>
     <div layout:fragment="content">
-   		<form id="soForm" method="post" th:action="@{/sales/soregister}" th:object="${salesOrder}">
+		<div th:object="${salesOrder}">
+   		<form id="soForm" method="post" th:action="@{/sales/soregister}">
 		 <div class="container">
 	    	<h2>수주 정보 입력</h2>
+			
 	        <div class="form-group">
 	            <label>거래처명 *</label>
 				<input type="text" id="cltNameTxt" readonly="true" style="margin-right: 10px;" placeholder="거래처 검색">
 				<input type="hidden" th:field="*{cltCode}" id="cltNameHidden">
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cltModal">검색</button>
 	        </div>
-	         <div class="form-group">
+			<div class="error" th:if="${#fields.hasErrors('cltCode')}" th:errors="*{cltCode}">거래처 오류</div>
+			
+	        <div class="form-group">
 	            <label>제품 *</label>
 	            <select id="productSelected" th:field="*{pdtCode}">
 	                <option th:each="product : ${productList}"
@@ -120,32 +133,46 @@
 						th:text="${product.pdtName}">적용</option>
 	            </select>
 	        </div>
+			<div class="error" th:if="${#fields.hasErrors('pdtCode')}" th:errors="*{pdtCode}">제품 오류</div>
+			
 	        <div class="form-group">
 	            <label>수주번호 *</label><!-- 서버에서 바로 처리 -->
-	            <input type="text" th:value="${nextSeq + 1}" id="sonoTxt" readonly="true">
+	            <!--<input type="text" th:value="${nextSeq + 1}" id="sonoTxt" readonly="true">-->
+				<input type="text" th:value="*{soNo+1}" id="sonoTxt" readonly="true">
 				<input type="hidden" id="sonoHid" th:field="*{soNo}">
 	        </div>
-	        <div class="form-group">
+	        
+			<div class="form-group">
 	            <label>수주코드 생성 *</label><!-- 서버에서 바로 처리 -->
 				<input type="date" id="soCodeMakeDate">
 				<input type="text" id="soCodeTxt" readonly="true" th:field="*{soCode}">
 	        </div>
+			<div class="error" th:if="${#fields.hasErrors('soCode')}" th:errors="*{soCode}">수주코드 오류</div>
+			
 	        <div class="form-group date-container">
 	            <label>수주일자 *</label>
 	            <input type="date" th:field="*{soDate}">
 	        </div>
-	         <div class="form-group date-container">
+			<div class="error" th:if="${#fields.hasErrors('soDate')}" th:errors="*{soDate}">수주일자 오류</div>
+			
+	        <div class="form-group date-container">
 	            <label>예상 출하일자 *</label>
 	            <input type="date" th:field="*{shipDate}">
 	        </div>
+			<div class="error" th:if="${#fields.hasErrors('shipDate')}" th:errors="*{shipDate}">출하일자 오류</div>
+			
 			<div class="form-group">
 	            <label>수량 *</label>
 	            <input type="text" placeholder="숫자입력" th:field="*{soQty}">
 	        </div>
+			<div class="error" th:if="${#fields.hasErrors('soQty')}" th:errors="*{soQty}">수량 오류</div>
+				
 			<div class="form-group">
 				<label>출고단가 *</label>
 				<input type="text" placeholder="숫자입력" th:field="*{pdtPrice}">
 	        </div>
+			<div class="error" th:if="${#fields.hasErrors('pdtPrice')}" th:errors="*{pdtPrice}">출고단가 오류</div>
+				
 			<div class="form-group">
 				<label>진행 상태 *</label>
 				<select id="productSelected" th:field="*{soStatus}">
@@ -155,23 +182,26 @@
 					</option>
 	            </select>
 	        </div>
-	      <div class="form-group">
-	        <label>담당자 *</label>
-	        <select id="deptSelected">
-			<option th:each="dept : ${commListDetp}"
-				th:value="${dept.cmnDetailCode}"
-				th:text="${dept.cmnDetailName}">
-			</option>
-			</select>
-			<select id="posSelected">
+			<div class="error" th:if="${#fields.hasErrors('soStatus')}" th:errors="*{soStatus}">진행상태 오류</div>
+			
+	      	<div class="form-group">
+				<label>담당자 *</label>
+	        	<select id="deptSelected">
+				<option th:each="dept : ${commListDetp}"
+					th:value="${dept.cmnDetailCode}"
+					th:text="${dept.cmnDetailName}">
+				</option>
+				</select>
+				<select id="posSelected">
 				<option th:each="pos : ${commListPosition}"
 					th:value="${pos.cmnDetailCode}"
 					th:text="${pos.cmnDetailName}">
 				</option>
-			</select>
+				</select>
 				<select id="empSelected" th:field="*{empNo}">
-			</select>
-	       </div>
+				</select>
+	       	</div>
+			<div class="error" th:if="${#fields.hasErrors('empNo')}" th:errors="*{empNo}">담당자 오류</div>
     	</div><!-- <div class="container"> -->
 			
 		<br>	
@@ -181,6 +211,11 @@
     		<button type="button" class="btn btn-primary" onclick="window.close()">취소</button>
     	</div>
 	</form>	
+	
+
+	
+	
+	</div>
    
 	<!-- 모달 시작 -->
 	<div class="modal fade" id="cltModal" tabindex="-1" insert>
