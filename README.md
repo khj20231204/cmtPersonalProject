@@ -128,7 +128,7 @@ AWS EC2 : TOMCAT / ORACLE
 11. # AWS CI/CD🔜
 
     AWS의 CI/CD는 CodeBuild + CodeDeploy + CodePipeline 조합을 통해 전체 개발부터 배포까지 자동화할 수 있도록 지원합니다.   
-    <img src="readmeImg/aws_info.png" style="border:3px solid black;border-radius:9px;width:300px">   
+    <img src="readmeImg/aws_info.png" style="border:3px solid black;border-radius:9px;width:500px">   
 
     ✅  
     |   서비스   |   설명   |
