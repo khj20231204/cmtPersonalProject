@@ -43,6 +43,9 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     
+    //spring validation 적용
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
     // 타임리프 관련 의존성
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 

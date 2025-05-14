@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 //에러처리
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "PURCHASES_ORDER")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PurchasesOrder {
 	
 	@Id
@@ -45,6 +47,7 @@ public class PurchasesOrder {
 	@Column(name = "EMP_NO")
 	private Long empNo;  //사원번호
 	
+	//입력 받지 않는다
 	@Column(name = "WHS_CODE")
 	private String whsCode; //창고 코드
 	
@@ -60,20 +63,22 @@ public class PurchasesOrder {
 	@Column(name = "MTL_RCV_PRICE")
 	private String mtlRcvPrice;  //입고단가
 	
+	//입력 받지 않는다
 	@Column(name = "PO_VALUE")
 	private Integer poValue;  //공급가액
 	
 	@Column(name = "PO_STATUS")
 	private String poStatus;  //종결여부
 	
+	//입력 받지 않는다
 	@Column(name = "PO_COMMENTS")
 	private String poComments;  //비고
 	
 	@Column(name = "PO_USE_YN")
-	private String poUseYn;  //사용여부
+	private String poUseYn = "Y";  //사용여부
 	
 	@Column(name = "QTY_UNIT")
-	private String qtyUnit;  //단위
+	private String qtyUnit = "UNC001";  //단위
 	
 	@Column(name = "MTL_RCV_QTY")
 	private String mtlRcvQty;  //발주 입고량

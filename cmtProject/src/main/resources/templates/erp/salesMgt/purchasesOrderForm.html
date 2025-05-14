@@ -380,10 +380,28 @@
 			let rk = evValue.rowKey;
 			let rowData = grid.getRow(rk);
 			let pono = rowData.poNo;
-			console.log("pono:"+pono);
+			//console.log("pono:"+pono);
 			
 			//console.log(ev.changes[0]); 
 			//{rowKey: 5, columnName: 'empId', value: '930216', prevValue: '921114'}
+			
+			if(evValue.columnName === 'poQty' || evValue.columnName === 'mtlRcvPrice'){
+										
+				let v = evValue.value?.toString().trim(); 
+				
+				if(isNaN(v) || v === '' ){
+
+					setTimeout(()=>{
+						Swal.fire({
+						  icon: "warning",
+						  title: "해당 컬럼은 숫자만 입력 가능합니다."
+						});
+					},0);
+					
+					return;
+				}
+			
+			}
 			
 			let sendData = {
 				poNo : pono,
@@ -391,7 +409,7 @@
 				value : evValue.value
 			};
 			
-			console.log(sendData);
+			//console.log(sendData);
 			//{soNo: 445, columnName: 'soStatus', value: 'SO_INPRODUCTION'}
 			
 			$.ajax({
@@ -399,7 +417,7 @@
 				type: "GET",
 				data: sendData,
 				success: function(result) {
-					console.log('수주 리스트 : ',result);
+					console.log('발주 리스트 : ',result);
 				},
 				error: function(errorResult) {
 					grid.restore(); // 이전 상태로 롤백
@@ -582,7 +600,7 @@
 						grid.rowHeaders
 						grid.setColumns([
 						{
-							header: '수주번호',
+							header: '발주번호',
 							name: 'PO_NO',
 							width: 100,
 							//fontSize: '40',
@@ -591,7 +609,7 @@
 							align: "center" 
 			            },
 			            {
-			                header: '수주코드',
+			                header: '발주코드',
 			                name: 'PO_CODE',
 							width: 200,
 							//fontSize: '50',

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.cmtProject.controller.erp.saleMgt.commonModel.PurchasesOrderModels;
+import com.example.cmtProject.dto.erp.saleMgt.PurchasesOrderDTO;
 import com.example.cmtProject.dto.erp.saleMgt.PurchasesOrderEditDTO;
 import com.example.cmtProject.dto.erp.saleMgt.PurchasesOrderMainDTO;
 import com.example.cmtProject.dto.erp.saleMgt.PurchasesOrderSearchDTO;
@@ -33,6 +35,7 @@ import com.example.cmtProject.service.erp.saleMgt.PurchasesOrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,10 +110,12 @@ public class PurchaseController {
 		//시퀀스 가져오기
 		Long nextSeq = purchasesOrderRepository.getNextPurchasesOrderNextSequences();
 		
-		model.addAttribute("nextSeq",nextSeq); //발주번호
+		//model.addAttribute("nextSeq",nextSeq); //발주번호
 		
-//		//th:object에서 사용할 객체 생성
-	 	model.addAttribute("purchasesOrder", new PurchasesOrder());
+		//th:object에서 사용할 객체 생성
+		PurchasesOrderDTO purchasesOrder = new PurchasesOrderDTO();
+		purchasesOrder.setPoNo(nextSeq);
+	 	model.addAttribute("purchasesOrder", purchasesOrder);
 		
 		return "erp/salesMgt/poRegisterForm";
 	}
@@ -149,12 +154,28 @@ public class PurchaseController {
 	//발주 등록 실행
 	@Transactional
 	@PostMapping("/poregister")
-	public String poRegister(@ModelAttribute PurchasesOrder purchasesOrder) {
+	public String poRegister(@ModelAttribute("purchasesOrder") @Valid PurchasesOrderDTO purchasesOrder, BindingResult bindingResult, Model model) {
+		
+		if(bindingResult.hasErrors()) {
+			
+			purchasesModels.commonPurchasesOrderModels(model);
+			model.addAttribute("purchasesOrder", purchasesOrder);
+			
+			log.error("Validation 오류 발생!"); 	
+	    	
+	    	bindingResult.getFieldErrors().forEach(error -> {
+	            System.out.println("Field: " + error.getField());
+	            System.out.println("Rejected value: " + error.getRejectedValue());
+	            System.out.println("Message: " + error.getDefaultMessage());
+	        });
+	    	
+			return "erp/salesMgt/poRegisterForm";
+		}
 		
 		//주의! sequence 증가시 soNo값을 null로 줘야 insert가 제대로 동작
 		purchasesOrder.setPoNo(null);
 		purchasesOrder.setPoUseYn("Y");
-		purchasesOrderRepository.save(purchasesOrder);
+		purchasesOrderRepository.save(purchasesOrder.toEntity());
 		purchasesOrderRepository.flush();
 
 		//submit처리

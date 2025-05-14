@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.cmtProject.controller.erp.saleMgt.commonModel.SalesOrderModels;
+import com.example.cmtProject.dto.erp.saleMgt.SalesOrderDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderEditDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderMainDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderSearchDTO;
@@ -38,6 +40,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -133,15 +136,18 @@ public class saleController {
 	@GetMapping("/soregisterform")
 	public String soregisterform(Model model) {
  		
+		//거래처, 제품, 진행상태, 담당자 select박스 목록 가져오기
 		salesOrderModels.commonSalesOrderModels(model);
 				
 	 	//수주번호 다음 시쿼스 가져오기
 		Long nextSeq = salesOrderRepository.getNextSalesOrderNextSequences();
 		
-	 	model.addAttribute("nextSeq", nextSeq); //수주 번호
+	 	//model.addAttribute("nextSeq", nextSeq); //수주 번호
 	 	
 	 	//th:object에서 사용할 객체 생성
-	 	model.addAttribute("salesOrder", new SalesOrder());
+	 	SalesOrderDTO salesOrder = new SalesOrderDTO();
+	 	salesOrder.setSoNo(nextSeq);  //thymeleaf에서 사용하기 위해 일단 입력 후 JPA에 save할 때는 null로 다시 만듦
+	 	model.addAttribute("salesOrder", salesOrder);
 	 	
 		return "erp/salesMgt/soRegisterForm";
 	}
@@ -177,9 +183,31 @@ public class saleController {
 		return soCode;
 	}
 	
+	
+	//public String save(BindingResult result, @Valid SalesOrderRequest req) ❌ 작동하지 않음
+	//BindingResult는 반드시 @Valid 다음에 위치해야 함
 	@Transactional
 	@PostMapping("/soregister")
-	public String soRegister(@ModelAttribute SalesOrder salesOrder) {
+	public String soRegister(@ModelAttribute("salesOrder") @Valid SalesOrderDTO salesOrder,  BindingResult bindingResult, Model model) {
+		
+		System.out.println("========================== salesOrder:" + salesOrder);
+		
+	    if (bindingResult.hasErrors()) {
+	    	
+	    	salesOrderModels.commonSalesOrderModels(model);
+	    	model.addAttribute("salesOrder", salesOrder);
+	    	
+	    	
+	    	log.error("Validation 오류 발생!"); 	
+	    	
+	    	bindingResult.getFieldErrors().forEach(error -> {
+	            System.out.println("Field: " + error.getField());
+	            System.out.println("Rejected value: " + error.getRejectedValue());
+	            System.out.println("Message: " + error.getDefaultMessage());
+	        });
+	    	
+	        return "erp/salesMgt/soRegisterForm";
+	    }
 		
 		//주의! sequence 증가시 soNo값을 null로 줘야 insert가 제대로 동작
 		salesOrder.setSoNo(null); 
@@ -191,8 +219,9 @@ public class saleController {
 		
 		//log.info("salesOrder=========================:" + salesOrder);
 		
-		
-		salesOrderRepository.save(salesOrder);
+		//salesOrder는 DTO이기 때문에 toEntity로 entity로 변환
+		//dto로 넘겨도 되는데 이미 service와 mapper를 entity로 입력받는 상황
+		salesOrderRepository.save(salesOrder.toEntity(salesOrder));
 		salesOrderRepository.flush();
 		
 		return "erp/salesMgt/submitSuccess";
