@@ -72,7 +72,7 @@ AWS EC2 : TOMCAT / ORACLE
     MES는 각 프레임 부품의 LOT 번호를 기준으로 이력 추적을 가능. 용접된 부품이 어떤 소재에서 나왔는지, 언제 어떤 설비에서 가공되었는지를 실시간으로 확인할 수 있습니다. 이는 리콜 대응 및 품질 분석에 핵심적인 기능.     
 
     ✅ 공정 현황 Recod   
-    공정이 이루어지는 모든 단계를 기록했다가 재로딩시 이전 상황가 일치하게 로딩되는 페이지 구현.   
+    공정이 이루어지는 모든 단계를 기록했다가 재로딩시 이전 상황과 일치하게 로딩되는 페이지 구현.   
     
     <span style='color:red;font-weight:bold'>
     *로그인/공지사항/작업지시서/LOT추적은 다른 팀원이 함, 사이트 흐름상 가져옴   
@@ -148,7 +148,7 @@ AWS EC2 : TOMCAT / ORACLE
     </tr>
     </table>
 
-    build와 deploy가 실행될 때 buildspec.yml, appspec.yml, stop_tomcat.sh, start_tomcat.sh 해당 파일들이 실행되는 일련의 연속적인인 과정입니다.    CodePipeline은 새로운 커밋이나 빌드 결과물(아티팩트)이 올라왔는지 자동 감지하는 역할을 합니다. 그렇기 때문에 GitHub와 CodeBuild 사이에, CodeBuild 이후 S3와 CodeDeploy사이에 각각 CodePipeline이 관여하게 됩니다.   
+    build와 deploy가 실행될 때 buildspec.yml, appspec.yml, stop_tomcat.sh, start_tomcat.sh 해당 파일들이 실행되는 일련의 연속적인 과정입니다.    CodePipeline은 새로운 커밋이나 빌드 결과물(아티팩트)이 올라왔는지 자동 감지하는 역할을 합니다. 그렇기 때문에 GitHub와 CodeBuild 사이에, CodeBuild 이후 S3와 CodeDeploy사이에 각각 CodePipeline이 관여하게 됩니다.   
     각 과정마다 IAM의 역할과 정책이 적용되는데 JSON파일 설정이 좀 까다롭습니다.
 
     요약:
