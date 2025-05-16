@@ -168,5 +168,5 @@ AWS EC2 : TOMCAT / ORACLE
     __CodeDeploy (서버버에 배포)__   
     : appsec.yml 실행(stop_tomcat.sh 실행 → 톰캣 정지 → myapp.war를 /usr/local/tomcat/webapps/에 복사 => start_tomcat.sh 실행 → myapp.war를 ROOT.war로 변경 → 톰캣 재시작 : 서버EC2에 배포)   
 
-12.  # REFLECTION✍️
+12.  # PROJECT REVIEW✍️
         BOM테이블에서 계층 구조를 구성하는 부분과 LOT를 생성하는 부분에서 많은 시간과 노력이 들어갔습니다. 이 부분을 함께 고민하고 구현하는데 많은 조언을 주신 같은 공정 파트 팀원에게 감사하단 말씀을 드리고싶습니다.   
