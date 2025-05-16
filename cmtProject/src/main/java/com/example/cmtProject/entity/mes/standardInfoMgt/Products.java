@@ -59,6 +59,9 @@ public class Products {
     
     @Column(name = "PDT_TYPE")
     private String pdtType;
+    
+    @Column(name = "PRC_TYPE_CODE")
+    private String prcTypeCode;
         
 }
 

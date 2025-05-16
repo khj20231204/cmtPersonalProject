@@ -19,58 +19,168 @@
     <style>
         body { background-color: #f4f8fc; }
         .container { background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h4 { margin-bottom: 1.5rem; }
+        
+		h4 { margin-bottom: 1.5rem; }
         .section-title { margin-top: 2rem; font-weight: bold; }
         .btn-upload { background-color: #007bff; color: white; }
         .btn-download { background-color: #28a745; color: white; }
-        table thead { background-color: #f1f5fb; }
+        
+		table thead { background-color: #f1f5fb; }
 		.filediv {display: flex;}
 		.selecedRowClass {background-color:aliceblue !important; color: white; }
+		
+		.img-wrapper {
+			position: relative;
+		   	display: inline-block;
+		}
+
+		.img-tooltip {
+			width: 310px;       
+			height: 200px;      
+			visibility: hidden;
+		   	background-color: rgb(85, 79, 81);
+		   	color: #fff;
+		   	text-align: left;
+		   	border-radius: 4px;
+		   	/* padding: 5px; */
+		   	position: absolute;
+		   	top: 100%; /* 이미지 아래 */
+		   	left: calc(100% + 150px); /* 기존보다 오른쪽으로 10px */
+		   	transform: translateX(-50%);
+		   	white-space: pre;
+		   	z-index: 1;
+		   	/* margin-top: 5px; */
+		   	font-size: 14px;
+		}
+
+		.img-wrapper:hover .img-tooltip {
+		   	visibility: visible;
+		}
+		
+		.img-wrapper-excel {
+			position: relative;
+		   	display: inline-block;
+		}
+
+		.img-tooltip-excel {
+			width: 380px;       
+			height: 100px;      
+			visibility: hidden;
+		   	background-color: rgb(255, 255, 255);
+		   	color: grey;
+		   	text-align: left;
+		   	border-radius: 4px;
+			border: solid dimgrey 1px;
+		   	/* padding: 5px; */
+		   	position: absolute;
+		   	/*top: 100%; /* 이미지 아래 */
+		   	left: calc(100% + 200px); /* 기존보다 오른쪽으로 10px */
+		   	transform: translateX(-50%);
+		   	white-space: pre;
+		   	z-index: 1;
+		   	/* margin-top: 5px; */
+		   	font-size: 14px;
+		}
+
+		.img-wrapper-excel:hover .img-tooltip-excel {
+		   	visibility: visible;
+		}
+		
     </style>																																																																																																																																																					
 </head>
 <body>
 	<div layout:fragment="content">
-	<h4>BOM 정보</h4>
-	<div class="container mt-5">
+	
+	<h3>PRODUCT와 BOM</h3>
+	
+	<div class="card">
+		<div class="card-header">
+	        <h5 class="card-title">PRODUCT 정보</h5>
+	    </div>
+
+		<div class="card-body"> <!-- 여기에 내용작성 -->
 	    <div class="row mb-3">
-	        <div class="col-md-3">
-	            <input type="month" class="form-control" placeholder="등록월">
-	        </div>
 	        <div class="col-md-4">
 	            <div class="input-group">
-	                <input type="text" class="form-control" placeholder="제품명을 입력해주세요.">
+	                <input type="text" id="searchTxt" class="form-control" placeholder="검색어를 입력해주세요.">
 	                <button class="btn btn-outline-secondary" type="button">
 	                    <i class="bi bi-search"></i>
 	                </button>
 	            </div>
 	        </div>
 	    </div>
-
+		
 		<div class="text-end filediv">
             <input type="file" id="fileUpload" hidden>
             <input type="file" class="form-control" id="fileInput" accept=".xlsx" style="width: 400px;">
-            <button class="btn btn-upload" style="margin-right: 10px;margin-left: 10px;" id="pdtExcelUpBtn">제품 엑셀 파일 업로드</button>
-            <button class="btn btn-download" id="pdtExcelDownBtn">제품 엑셀 다운로드</button>
-			<div class="text-end mb-2">
-				<button type="button" class="btn btn-outline-primary" style="margin-left: 400px;"  data-bs-toggle="modal" data-bs-target="#pdtModal">
-				    제품 등록
-				</button>
+            <button class="btn btn-upload" style="margin-right: 10px;margin-left: 10px;width: 160px;height: 40px;" id="pdtExcelUpBtn"><i class="fa-solid fa-file-arrow-up"></i>제품 엑셀 업로드</button>
+            <button class="btn btn-download" style="width: 170px;height: 40px;" id="pdtExcelDownBtn"><i class="fa-solid fa-file"></i>제품 엑셀 다운로드</button>
+			<div class="img-wrapper-excel" style="display: flex;">
+				&nbsp;<img src="https://raw.githubusercontent.com/khj20231204/cmtPersonalProject/refs/heads/main/readmeImg/excel-exclamation-mark.png" style="height:30px;width:30px;cursor: pointer;">
+				<div id="outputDiv-excel" class="img-tooltip-excel"></div>
+			</div>
+			<div id="pdtBasic"  class="text-end mb-2" style="margin-left: 400px;">
+				<button class="btn btn-primary btn-m" id="registerPdtBtn"><i class="fa-solid fa-database"></i> 제품 등록</button>
+				<button class="btn btn-outline-danger  btn-m" id="delPdtBtn"><i class="fa-solid fa-trash-can"></i>제품 삭제</button>
+				<button class="btn btn-primary btn-m" id="registerExePdtBtn" style="display: none;"><i class="fa-solid fa-check"></i> 등록 실행</button>
+				<button class="btn btn-danger btn-m" id="cancleRegPdtBtn" style="display: none;"><i class="fa-solid fa-trash-can"></i>등록 취소</button>
 		    </div>
         </div>
 					
+		<div style="display: flex; align-items: center;">
+			<div class="img-wrapper" style="display: flex;">
+				<h6 class="section-title" style="margin-right: 10px;">제품 <img src="https://raw.githubusercontent.com/khj20231204/cmtPersonalProject/refs/heads/main/readmeImg/excel-exclamation-mark.png" style="width:30px;cursor: pointer;"></h6>
+		   		<div id="outputDiv" class="img-tooltip"></div>
+		  	</div>
+		</div>
+		
 		<!-- grid 사용, window.pdtGrid로 접근하기위해 이름을 ptdGrid로 설정  -->
-	    <h6 class="section-title">제품</h6>
 		<div id="pdtGrid"></div>
 
-		<!-- grid 사용 -->
-	    <h6 class="section-title">BOM</h6>
-		<div id="bomGrid"></div>
+		</div><!-- <div class="card-body"> -->
+	</div><!-- <div class="card"> -->
+
+	<hr>		
 		
-		<div>
-			<button class="btn btn-outline-primary">자재 찾기</button>
-			<button class="btn btn-outline-primary" id="deleteBtn">삭제</button>
-		</div>
-	</div><!-- <div class="container mt-5"> -->
+	<div class="card">
+		<div class="card-header">
+	        <h5 class="card-title">BOM 정보</h5>
+	    </div>
+		
+		<div class="card-body"> <!-- 여기에 내용작성 -->
+				
+		    <div class="row mb-3">
+		        <!--<div class="col-md-3">
+		            <input type="month" class="form-control" placeholder="등록월">
+		        </div>-->
+		        <div class="col-md-4">
+		            <div class="input-group">
+		                <input type="text" class="form-control" placeholder="BOM명을 입력해주세요.">
+		                <button class="btn btn-outline-secondary" type="button">
+		                    <i class="bi bi-search"></i>
+		                </button>
+		            </div>
+		        </div>
+		    </div>
+
+			<div class="text-end filediv">
+	            <input type="file" id="fileUpload" hidden>
+	            <input type="file" class="form-control" id="fileInput" accept=".xlsx" style="width: 400px;">
+	            <button class="btn btn-upload" style="margin-right: 10px;margin-left: 10px;" id="pdtExcelUpBtn">BOM 엑셀 업로드</button>
+	            <button class="btn btn-download" id="pdtExcelDownBtn">BOM 엑셀 다운로드</button>
+				<div class="text-end mb-2">
+					<button type="button" class="btn btn-outline-primary" style="margin-left: 400px;"  data-bs-toggle="modal" data-bs-target="#pdtModal">
+					    BOM 등록
+					</button>
+			    </div>
+	        </div>	
+		
+			<!-- grid 사용 -->
+		    <h6 class="section-title">BOM</h6>
+			<div id="bomGrid"></div>
+
+		</div><!-- <div class="card-body"> -->
+	</div><!-- <div class="card"> -->
 
 	<!--  모달 창 시작 -->
 	<div class="modal fade" id="pdtModal" tabindex="-1" aria-labelledby="pdtModalLabel" aria-hidden="true">
@@ -161,28 +271,56 @@
 		
 	<script th:inline="javascript">
 		
+	let pdtRegiCheck = false; //제품 등록일 경우 더블클릭을 막기 위해 설정(제품 등록 : true, 등록 실행과 등록 취소일 때 false)
+		
 	//================================== 그리드 상단 제품 부분 ================================= 
 	let gridData = /*[[${productList}]]*/ [];
 	let materialTypeList = /*[[${materialTypeList}]]*/ [];
 	let lengthUnitList = /*[[${lengthUnitList}]]*/ [];
 	let weightUnitList = /*[[${weightUnitList}]]*/ [];
-	let productTypeList = /*[[${productTypeList}]]*/ []
+	let productTypeList = /*[[${productTypeList}]]*/ [];
+	let processInfoList = /*[[${processInfoList}]]*/ [];
 	
-	console.log(materialTypeList);
-	console.log(lengthUnitList);
-	console.log(weightUnitList);
-	console.log(productTypeList);
+	let maxFP = [[${maxFP}]];
+	let maxWIP = [[${maxWIP}]];
+	
+	//console.log(maxFP + " ," + maxWIP);
+	document.getElementById('outputDiv').textContent = 
+`
+   ❶ 현재 FP의 최대값 FP: ${maxFP},  
+   ❷ 현재 WIP의 최대값 WIP: ${maxWIP}.
+   ❸ 제품 유형 :
+   FP(완제품), WIP(반제품), MTL(원자재)
+   ❹ 공정 유형 :
+   PR(압축), WE(용접), PA(도장), AS(조립)
+   ❺ 제품가격, 무게, 길이는
+   숫자만 입력 가능함.
+`;
+
+	document.getElementById('outputDiv-excel').textContent = 
+`
+	엑셀 파일을 업로드하면 바로 데이터베이스에 적용됩니다.
+	제품 번호가 존재하면 수정,
+	제품 번호가 존재하지 않으면 추가됩니다.
+`;
+	
+	
+	//console.log(materialTypeList);
+	//console.log(lengthUnitList);
+	//console.log(weightUnitList);
+	//console.log(productTypeList);
 	
 	let materialTypeSelected = materialTypeList.map(item => ({text: item.mtlTypeName, label: item.mtlTypeName, value: item.mtlTypeCode}));
 	let lengthUnitSelected = lengthUnitList.map(item => ({text: item.ltTypeSymbol, label: item.ltTypeSymbol, value: item.ltTypeCode}));
 	let weightUnitSelected = weightUnitList.map(item => ({text: item.wtTypeSymbol, label: item.wtTypeSymbol, value: item.wtTypeCode}));
 	let productTypeSelected = productTypeList.map(item => ({text: item.pdtTypeName, label: item.pdtTypeName, value: item.pdtTypeCode}));
-	/*
-	console.log(materialTypeList);
-	console.log(lengthUnitList);
-	console.log(weightUnitSelected);
-	console.log(productTypeSelected);
-	*/
+	let processInfoSelected = processInfoList.map(item => ({text: item.prcTypeNameKo, label: item.prcTypeNameKo, value: item.prcTypeCode}));
+	
+	//console.log(materialTypeSelected);
+	//console.log(lengthUnitSelected);
+	//console.log(weightUnitSelected);
+	//console.log(productTypeSelected);
+	
 	let grid = new tui.Grid({
         el: document.getElementById('pdtGrid'), 
 		//data : /*[[${productList}]]*/ [],
@@ -212,9 +350,27 @@
 				width: 100,
 				sortable: true, 
 				filter: 'text',
-				align: "center" 
+				align: "center",
+				editor: "text"
             },
-			
+		 	{  
+	            header: '제품유형',
+	            name: 'pdtType', 
+				width: 100,
+				sortable: true, 
+				filter: 'text',
+				align: 'center',
+				editor: {
+					type: 'select',
+					options: {
+						listItems: productTypeSelected 
+					}
+				},
+				formatter: ({ value }) => {
+			    	const pdtValue = productTypeSelected.find(item => item.value === value);
+			    	return pdtValue ? pdtValue.label : value; 
+			    }
+			},
 			{
                 header: '제품명',
                 name: 'pdtName',
@@ -234,24 +390,7 @@
 				align: 'center',
 				editor: "text"
             },
-            {  
-	            header: '제품유형',
-	            name: 'pdtTypeName', 
-				width: 100,
-				sortable: true, 
-				filter: 'text',
-				align: 'center',
-				editor: {
-					type: 'select',
-					options: {
-						listItems: productTypeSelected 
-					}
-				},
-				formatter: ({ value }) => {
-			    	const pdtValue = productTypeSelected.find(item => item.value === value);
-			    	return pdtValue ? pdtValue.label : value; 
-			    }
-			},
+            
 			{
 				header: '자재타입',
                	name: 'mtlTypeCode', 
@@ -324,7 +463,24 @@
 			    	return lenValue ? lenValue.label : value; 
 			    }
 			},
-			
+			{
+				header: '공정유형',
+               	name: 'prcTypeCode', 
+				width: 100,
+				sortable: true, 
+				filter: 'text',
+				align: 'center',
+				editor: {
+					type: 'select',
+					options: {
+						listItems: processInfoSelected 
+					}
+				},
+				formatter: ({ value }) => {
+			    	const prcValue = processInfoSelected.find(item => item.value === value);
+			    	return prcValue ? prcValue.label : value; 
+			    }
+			},
 			{
 	            header: '비고',
 	            name: 'pdtComments',
@@ -343,20 +499,31 @@
 	
 	//클릭시 제품 선택 값의 BOM을 하단 그리드에 출력
 	grid.on('click', ev => {
+		
+		//------------- 선택된 행에 class를 적용해서 강조 -------------
 		if(selectedEv !== null){
 			grid.removeRowClassName(selectedEv.rowKey, 'selecedRowClass');
 		}
 		
 		selectedEv = ev;
 		grid.addRowClassName(selectedEv.rowKey, 'selecedRowClass');
+		//------------------------------------------------------
+		/*
+		if(ev.targetType === 'etc'){ //제품에서 수정을 위해 더블클릭을 한 경우 클릭도 같이 실행되는데 이때 클릭한 값을 못 가져온다, 클릭했을 때 ev에 값이 없는 경우 targetType이 'etc'로 뜬다
+			return;
+		}*/
+		
+		if(pdtRegiCheck){ //현재 제품 등록인 경우 수정을 막는다
+			ev.stop();
+			
+			return;
+		}
 		
 		//클릭해서 하단 BOM에 선택된 제품 정보 출력
-		let evValue = ev;
-
-		let rk = evValue.rowKey;
+		let rk = ev.rowKey;
 		let rowData = grid.getRow(rk);
 		let pdtCode = rowData.pdtCode;
-		console.log(pdtCode)
+		
 		//제품 그리드에서 선택된 제품에 해당하는 BOM 데이터 불러오기
 		$.ajax({
 		url: '/bom/bom-selected', 
@@ -377,7 +544,7 @@
 	        bomGrid.setColumns(bomData.COLUMNS);
 			bomGrid.resetData(bomData.DATA); */
 			 
-			console.log(bomData);
+			//console.log(bomData);
 			
 			bomGrid.resetData(bomData);
         },
@@ -389,6 +556,11 @@
 		
 	//수정
 	grid.on('afterChange', (ev) => {
+		
+		if(pdtRegiCheck){ //현재 제품 등록인 경우 수정을 막는다
+			ev.stop();
+			return;
+		}
 		
 		let evValue = ev.changes[0];
 		let rk = evValue.rowKey;
@@ -454,7 +626,7 @@
 				filter: 'text',
 				align: "center" 
             },
-           {
+            {
                 header: '하위 코드',
                 name: 'PARENT_PDT_CODE',
 				width: 220,
@@ -527,8 +699,8 @@
 		editingEvent: 'dblclick' 
     });
     
+	// 그리드 레이아웃 새로고침 (로드가 다 되지 않는 경우 그리드가 흰색 화면으로 출력될 때가 있다.)
 	bomGrid.on('onGridUpdated', (ev) => {
-		// 그리드 레이아웃 새로고침 (로드가 다 되지 않는 경우 그리드가 흰색 화면으로 출력될 때가 있다.)
 	    bomGrid.refreshLayout();
 	});
 	
@@ -559,7 +731,7 @@
 			value : evValue.value
 		};
 		
-		console.log(sendData);
+		//console.log(sendData);
 		//{soNo: 445, columnName: 'soStatus', value: 'SO_INPRODUCTION'}
 		
 		$.ajax({
@@ -604,7 +776,7 @@
 
 	    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 	    XLSX.writeFile(workbook, 'grid-data.xlsx');
-	});
+	}); //document.getElementById('pdtExcelDownBtn').addEventListener('click', function () {
 	
 	let file;
 	let reader;
@@ -615,14 +787,20 @@
 	    file = e.target.files[0];
 	    reader = new FileReader();
 		
+	}); //document.getElementById('fileInput').addEventListener('change', function (e) {
+
+	//버튼 클릭 시 선택된 엑셀 파일을 그리드에 출력       
+	document.getElementById('pdtExcelUpBtn').addEventListener('click', function (e) {
+		
 		if (!file) {
-			alert("파일을 선택해주세요.");
+			Swal.fire({
+		        icon: 'warning',
+		        title: '파일 없음',
+		        text: '파일을 선택해 주세요.',
+		        confirmButtonText: '확인'
+		    });
 			return;
 		}
-	});
-
-	//버튼 클릭 시 선택된 엑셀 파일을 그리드에 출력
-	document.getElementById('pdtExcelUpBtn').addEventListener('click', function (e) {
 		
 		reader.onload = function (event) {
 			const data = new Uint8Array(event.target.result);
@@ -631,44 +809,104 @@
 			const firstSheetName = workbook.SheetNames[0];
 		    const worksheet = workbook.Sheets[firstSheetName];
 
-			console.log(worksheet);
-			
-			worksheet["A1"] = { t: "s", v: "pdtNo", r:"<t>pdtNo</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtNo', w: 'pdtNo'};
-			worksheet["B1"] = { t: "s", v: "pdtCode", r:"<t>pdtCode</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtCode', w: 'pdtCode'};
-			worksheet["C1"] = { t: "s", v: "pdtTypeName", r:"<t>pdtTypeName</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtTypeName', w: 'pdtTypeName'};
-			worksheet["D1"] = { t: "s", v: "pdtName", r:"<t>pdtName</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtName', w: 'pdtName'};
-			worksheet["E1"] = { t: "s", v: "pdtShippingPrice", r:"<t>pdtShippingPrice</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtShippingPrice', w: 'pdtShippingPrice'};
-			worksheet["F1"] = { t: "s", v: "mtlTypeCode", r:"<t>mtlTypeCode</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'mtlTypeCode', w: 'mtlTypeCode'};
-			worksheet["G1"] = { t: "s", v: "pdtWeight", r:"<t>pdtWeight</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtWeight', w: 'pdtWeight'};
-			worksheet["H1"] = { t: "s", v: "wtTypeCode", r:"<t>wtTypeCode</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'wtTypeCode', w: 'wtTypeCode'};
-			worksheet["I1"] = { t: "s", v: "pdtSize", r:"<t>pdtSize</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtSize', w: 'pdtSize'};
-			worksheet["J1"] = { t: "s", v: "ltTypeCode", r:"<t>ltTypeCode</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'ltTypeCode', w: 'ltTypeCode'};
-			worksheet["K1"] = { t: "s", v: "pdtComments", r:"<t>pdtComments</t><phoneticPr fontId='1'' type='noConversion'/>", h: 'pdtComments', w: 'pdtComments'};
+			worksheet["A1"] = { t: "s", v: "pdtNo", h: 'pdtNo', w: 'pdtNo'};
+			worksheet["B1"] = { t: "s", v: "pdtCode", h: 'pdtCode', w: 'pdtCode'};
+			worksheet["C1"] = { t: "s", v: "pdtType", h: 'pdtType', w: 'pdtType'};
+			worksheet["D1"] = { t: "s", v: "pdtName", h: 'pdtName', w: 'pdtName'};
+			worksheet["E1"] = { t: "s", v: "pdtShippingPrice", h: 'pdtShippingPrice', w: 'pdtShippingPrice'};
+			worksheet["F1"] = { t: "s", v: "mtlTypeCode", h: 'mtlTypeCode', w: 'mtlTypeCode'};
+			worksheet["G1"] = { t: "s", v: "pdtWeight", h: 'pdtWeight', w: 'pdtWeight'};
+			worksheet["H1"] = { t: "s", v: "wtTypeCode", h: 'wtTypeCode', w: 'wtTypeCode'};
+			worksheet["I1"] = { t: "s", v: "pdtSize", h: 'pdtSize', w: 'pdtSize'};
+			worksheet["J1"] = { t: "s", v: "ltTypeCode", h: 'ltTypeCode', w: 'ltTypeCode'};
+			worksheet["K1"] = { t: "s", v: "prcTypeCode", h: 'prcTypeCode', w: 'prcTypeCode'};
+			worksheet["L1"] = { t: "s", v: "pdtComments", h: 'pdtComments', w: 'pdtComments'};
 
 			const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
+			if (jsonData.length === 0) {
+			  alert("엑셀 파일에 데이터가 없습니다.");
+			  return;
+			}
+
+			let excelDataCheck = false;
+
+			//엑셀 파일 유요성 검사
+			try{
+				jsonData.forEach(row => { 
+					//pdfCode에 fp나 wip를 포함하지 않으면 잘못된 파일
+					if(!row.pdtCode.toLowerCase().includes("fp") && !row.pdtCode.toLowerCase().includes("wip")){
+						excelDataCheck = true;							
+					}
+				});
+							
+				if(excelDataCheck){
+					Swal.fire({
+				        icon: 'warning',
+				        title: '선택하신 파일이 올바르지 않습니다.',
+				        text: '제품코드가 FP 또는 WIP로 시작해야합니다.',
+				        confirmButtonText: '확인'
+				    });
+					return;
+				}
+			}catch(error){
+				Swal.fire({
+			        icon: 'warning',
+			        title: '선택하신 파일이 올바르지 않습니다.',
+			        text: '제품코드가 FP 또는 WIP로 시작해야합니다.',
+			        confirmButtonText: '확인'
+			    });
+				return;
+			}
+			
 			// TUI Grid에 반영
 			grid.resetData(jsonData);
+			
+			//pdtNo와 pdtCode가 유효한지 판단 => DB에 update
+			if(registerGridDataCheck(jsonData)){
+				
+				//pdtNo가 있으면 update, 없으면 insert
+				registerExcelPdt(jsonData);
+			}
 	   	};
 
 		reader.readAsArrayBuffer(file);
 		
-	});	
+	});	//document.getElementById('pdtExcelUpBtn').addEventListener('click', function (e) 
 	
+	
+	//================================== JQuery 시작 =================================
 	$(document).ready(function(){
 		
-		//삭제 버튼 클릭시 제품과 BOM에서 삭제가 됨
+		let pdtGridData = [...gridData]
+		
+		//products 검색 텍스트 박스
+		$('#searchTxt').on('input', function(){
+			
+			let searchText = $(this).val().toLowerCase();
+			
+			let filterGridData = pdtGridData.filter(row => {
+				return Object.values(row).some(val => {
+					return String(val).toLowerCase().includes(searchText);
+				})
+			});
+			
+			grid.resetData(filterGridData);
+		});
+		
+		//삭제 버튼 클릭시 제품과 BOM에서 삭제가 됨 - PRODUCTS와 BOM 따로 삭제 버전
+		/*
 		$('#deleteBtn').on('click', function(){
 			
 			//제품 그리드 선택
 			var gridChecked = grid.getCheckedRows();
 			var gridArray = gridChecked.map(row => row.pdtNo)
-			console.log(gridArray)
+			//console.log(gridArray)
 			
 			//BOM그리드 선택
 			var bomGridChecked = bomGrid.getCheckedRows();
 			var bomGridArray = bomGridChecked.map(row => row.BOM_NO)
-			console.log(bomGridArray)
+			//console.log(bomGridArray)
 			
 			if(gridArray.length > 0 && bomGridArray.length > 0){
 				Swal.fire({
@@ -688,7 +926,7 @@
 				  	cancelButtonText: '취소'
 				}).then((result) => {
 					
-				  if (result.isConfirmed) {
+					if (result.isConfirmed) {
 				    
 						$.ajax({
 							url: "/pdt/delItems",
@@ -739,8 +977,6 @@
 				});//then
 			}//if문
 			
-			
-			
 			if(gridArray.length <= 0 && bomGridArray.length <= 0){
 				Swal.fire({
 				  icon: "warning",
@@ -749,19 +985,215 @@
 				return;
 			}
 		})//$('#deleteBtn').on('click', function(){
+		*/
 		
-		//제품 등록
-		$('#registerPdt').on('click', function(){
+		//procusts와 bom 동시 삭제 
+		$('#delPdtBtn').on('click', function(){
+			
+		}); //$('#delPdtBtn').on('click', function(){
+		
+				
+		//제품 등록 - 그리드에 row 추가
+		$('#registerPdtBtn').on('click', function(){
+			
+			pdtRegiCheck = true;
+			
+			$('#delPdtBtn').hide();
+			$('#registerExePdtBtn').show();
+			$('#cancleRegPdtBtn').show();
+			
+			grid.startEditing(); // 자동 편집 진입
+			
+			//행을 추가하면서 기본값과 포커스 지정
 			grid.prependRow({
-			  pdtNo: 'P002',
-			  pdtName: '포커스 추가',
-			  pdtPrice: 15000
+			  	pdtNo: '0000',
 			}, {
-			  focus: true
+			  	focus: true
 			});
 		})
-	});//$(document)
+		
+		//제품 등록 실행 - 추가된 그리드 row의 값을 INSERT
+		$('#registerExePdtBtn').on('click', () => {
+
+			pdtRegiCheck = false; //제품 등록 실행일 때 pdtRegiCheck 상태 변경
+			
+			//grid에 추가된 Row값만 가져온다
+			const inputData = grid.getModifiedRows().createdRows;
+			
+			//Grid data 유효성 검사
+			if(registerGridDataCheck(inputData)){
+				registerPdt(inputData);
+			}
+			
+		});	//$('#registerExePdtBtn').on('click', () => {
+			
+		//제품 등록 취소
+		$('#cancleRegPdtBtn').on('click', () => {
+			
+			pdtRegiCheck = false;
+			
+			$('#delPdtBtn').show();
+			$('#registerExePdtBtn').hide();
+			$('#cancleRegPdtBtn').hide();
+			
+			window.location.reload();
+		})
 	
+	});//$(document).ready(function(){
+	
+	//================================== JQuery 끝 =================================
+	
+	//Grid data 유효성 검사
+	function registerGridDataCheck(inputData){
+				
+		console.log("==================registerGridDataCheck의 inputData==================")
+		console.log(inputData)
+		
+		let nullCheck = false;
+		
+		let pdtNo = false;
+		let pdtCode = false;
+		let pdtShippingPriceCheck = false;
+		let pdtWeight = false;
+		let pdtSizeCheck = false;
+		
+		//숫자 체크
+		inputData.forEach(v => {
+			//v를 전부 배열로 만들어서
+			for(const [key, value] of Object.entries(v)){
+				
+				console.log("key:" + key + " ,value:" + value);
+				
+				if(key === 'pdtNo'){
+					if(!value){
+						pdtNo = true;
+					}
+				}
+				
+				if(key === 'pdtCode'){
+					if(!value){
+						pdtCode = true;
+					}
+				}
+				
+				if(key === 'pdtShippingPrice' && value){  //가격 체크
+					if(isNaN(value)){
+						pdtShippingPriceCheck = true;
+					}
+				}
+				
+				if(key === 'pdtWeight' && value){ //무게 체크
+					if(isNaN(value)){
+						pdtWeight = true;
+					}
+				}
+			
+				if(key === 'pdtSize' && value){ //길이 체크, 형식은 '숫자 x 숫자'만 가능
+					let valueArray = value.split(/x/i);
+					
+					if(isNaN(valueArray[0]) || isNaN(valueArray[1])){
+						pdtSizeCheck = true;
+					}
+				}
+				
+				if(value === null || value === ''){ //null이 있는지 체크 
+					nullCheck = true;
+				}
+				
+			}//for(const [key, value] of Object.entries(v)){
+		})//inputData.forEach(v => {
+			
+		if(pdtNo){
+			alert("제품번호 입력은 필수입니다.");
+			return false;
+		}else if(pdtCode){
+			alert("제품코드 입력은 필수입니다.");
+			return false;
+		}else if(nullCheck){
+			alert("입력되지 않은 값이 있습니다.");
+			return false;
+		}else if(pdtShippingPriceCheck){ //가격 체크
+			alert("제품 가격은 숫자만 가능합니다.")
+			return false;
+		}else if(pdtWeight){
+			alert("무게값은 숫자만 가능합니다.")
+			return false;
+		}else if(pdtSizeCheck){
+			alert("길이는 숫자x숫자 형식입니다.")
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	//제품 등록 실행
+	function registerPdt(inputData){
+		
+		const filterInputData = inputData.map(row => ({
+			pdtNo: null,
+			pdtCode: row.pdtCode,
+		  	pdtName: row.pdtName,
+			pdtShippingPrice: row.pdtShippingPrice,
+			pdtType: row.pdtType,
+			mtlTypeCode: row.mtlTypeCode,
+			ltTypeCode: row.ltTypeCode,
+			wtTypeCode: row.wtTypeCode,
+			pdtSize: row.pdtSize,
+			pdtWeight: row.pdtWeight,
+			pdtComments: row.pdtComments,
+			prcTypeCode: row.prcTypeCode
+		}));
+		
+		$.ajax({
+			url: '/bom/pdtRegister',
+			contentType: 'application/json',
+			type: 'POST',
+			data: JSON.stringify({data: filterInputData}),
+			//data: inputData,
+			success: function(result){
+				console.log(result);
+				
+				Swal.fire({
+			        icon: 'info',
+			        title: '성공',
+			        text: '데이터를 입력했습니다.',
+			    });
+
+				window.location.reload();
+			},
+			error: function(msg){
+				console.log("error:" + msg)
+			}
+		});	
+	}
+	
+	//엑셀 파일 database에 저장
+	function registerExcelPdt(jsonData){
+		console.log(jsonData)
+		
+		$.ajax({
+			url: '/bom/pdtExcelRegister',
+			contentType: 'application/json',
+			type: 'POST',
+			data: JSON.stringify({data: jsonData}),
+			//data: inputData,
+			success: function(result){
+				console.log(result);
+				
+				Swal.fire({
+			        icon: 'info',
+			        title: '성공',
+			        text: '데이터를 입력했습니다.',
+			    });
+	
+				window.location.reload();
+			},
+			error: function(msg){
+				console.log("error:" + msg)
+			}
+		});	
+		
+	}
   	</script>
 		
 	</div><!-- <div layout:fragment="content"> -->	

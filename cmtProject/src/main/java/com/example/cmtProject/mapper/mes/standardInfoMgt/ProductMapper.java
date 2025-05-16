@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductTotalDTO;
+import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsEditDTO;
 import com.example.cmtProject.entity.mes.standardInfoMgt.Products;
 
@@ -31,5 +32,14 @@ public interface ProductMapper {
 
 	//기준 정보 상품/BOM 페이지에서 상품 메인 그리드에 출력할 데이터
 	public List<ProductTotalDTO> getProductTotalList();
+
+	//FP의 현재 입력된 최대값
+	public String selectMaxFP();
+
+	//WIP의 현재 입력된 최대값
+	public String selectMaxWIP();
+
+	//Excel파일 DB에 저장
+	public void insertPdtExcel(ProductsDTO pdtDto);
 
 }

@@ -1,0 +1,56 @@
+
+
+길이는  숫자 x 숫자 형식만 가능하다
+
+가격, 무게, 길이는 빈칸도 원하면 입력 가능하지만 문자는 입력되지 않는다
+
+완제품(Product) 등록 시
+product 테이블에 신규 row 생성
+단독으로 등록 가능 (BOM 없이도)
+이 시점에는 BOM 정보가 없기 때문에 실제 조립이나 생산은 불가능
+이후에 BOM 정보(BOM 테이블)를 별도로 등록해야 완전한 생산 정의가 가능
+
+
+BOM 등록 시
+목적: 완제품의 구성 요소(부품, 반제품)를 계층적으로 정의
+이미 등록된 product_id (완제품) 가 존재해야 함
+각 구성품(child_product_id)이 제품 테이블에 이미 등록되어 있어야 함
+BOM 테이블에 parent-child 관계로 데이터 삽입
+
+외래키 제약 조건이 있는 경우:
+parent_product_id 와 child_product_id 모두 product 테이블에 존재해야 등록 가능
+BOM은 하나의 완제품을 루트로 여러 단계(child의 child 등) 등록이 가능 (재귀적 구조)
+
+
+삭제
+① 완제품(Product) 삭제 시
+예: product_id = A 인 완제품을 삭제하는 경우
+🚨 결과:
+**참조 무결성(외래키 제약)**에 따라 달라짐:
+외래키가 ON DELETE CASCADE:
+이 제품을 참조하는 BOM 행들이 자동으로 삭제됨
+외래키가 RESTRICT 또는 기본 설정:
+삭제 시도 시 에러 발생 (참조 중이라 삭제 불가)
+🔍 체크포인트:
+BOM 테이블에서 product_id 또는 child_product_id로 참조하고 있다면 참조 무결성 설정을 확인해야 함.
+
+
+② BOM 데이터 삭제 시
+특정 완제품의 BOM 구조만 제거 (예: 완제품 A의 구성품 구조 제거)
+🧾 결과:
+제품(Product) 테이블의 완제품 정보는 남아 있음
+하지만 구성 정보가 없어져 생산/조립 불가능한 상태가 됨
+예시 쿼리:
+sql
+복사
+편집
+DELETE FROM bom WHERE product_id = 'A';
+🔍 체크포인트:
+product_id = A 는 여전히 제품 테이블에 존재
+구성 정보만 사라졌기 때문에, BOM 없는 유령 제품처럼 됨
+
+
+외래키 설정 명확히 하자:
+BOM 테이블의 product_id, child_product_id가 제품 테이블을 참조할 때 ON DELETE SET NULL, CASCADE, RESTRICT 중 어떤 전략을 쓸지 명확히 설정.
+**논리 삭제(soft delete)**도 고려하자:
+실제 삭제 대신 is_deleted 플래그를 두고 관리하면, 실수로 인한 데이터 손실을 방지할 수 있음.

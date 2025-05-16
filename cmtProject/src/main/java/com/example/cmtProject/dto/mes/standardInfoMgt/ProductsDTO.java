@@ -25,6 +25,7 @@ public class ProductsDTO {
     private String pdtSize;
     private String ltTypeCode;
     private String pdtType;
+    private String prcTypeCode;
     
     public Products toEntity() {
         return Products.builder()
@@ -40,6 +41,7 @@ public class ProductsDTO {
             .pdtSize(this.pdtSize)
             .ltTypeCode(this.ltTypeCode)
             .pdtType(this.pdtType)
+            .prcTypeCode(this.prcTypeCode)
             .build();
     }
 }

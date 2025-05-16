@@ -9,10 +9,12 @@ import org.springframework.ui.Model;
 
 import com.example.cmtProject.entity.mes.standardInfoMgt.LengthUnit;
 import com.example.cmtProject.entity.mes.standardInfoMgt.MaterialType;
+import com.example.cmtProject.entity.mes.standardInfoMgt.ProcessInfo;
 import com.example.cmtProject.entity.mes.standardInfoMgt.ProductType;
 import com.example.cmtProject.entity.mes.standardInfoMgt.WeightUnit;
 import com.example.cmtProject.repository.mes.standardInfoMgt.LengthUnitRepository;
 import com.example.cmtProject.repository.mes.standardInfoMgt.MaterialTypeRepository;
+import com.example.cmtProject.repository.mes.standardInfoMgt.ProcessInfoRepository;
 import com.example.cmtProject.repository.mes.standardInfoMgt.ProductTypeRepository;
 import com.example.cmtProject.repository.mes.standardInfoMgt.WeightUnitRepository;
 
@@ -24,6 +26,7 @@ public class BomInfoModels {
 	//SELECT * FROM LENGTH_UNIT;
 	//SELECT * FROM WEIGHT_UNIT;
 	//SELECT * FROM PRODUCT_TYPE;
+	//SELECT * FROM PROCESS_INFO
 	
 	@Autowired
 	private MaterialTypeRepository materialTypeRepository;
@@ -36,6 +39,9 @@ public class BomInfoModels {
 	
 	@Autowired
 	private ProductTypeRepository productTypeRepository;
+	
+	@Autowired
+	private ProcessInfoRepository processInfoRepository;
 	
 	public void commonBomInfoModels(Model model) {
 		
@@ -51,9 +57,13 @@ public class BomInfoModels {
 		//상품 타입
 		List<ProductType> productTypeList = productTypeRepository.findAll();
 		
+		//공정 유형
+		List<ProcessInfo> processInfoList = processInfoRepository.findAll();
+		
 		model.addAttribute("materialTypeList", materialTypeList);
 		model.addAttribute("lengthUnitList", lengthUnitList);
 		model.addAttribute("weightUnitList", weightUnitList);
 		model.addAttribute("productTypeList", productTypeList);
+		model.addAttribute("processInfoList", processInfoList);
 	}
 }

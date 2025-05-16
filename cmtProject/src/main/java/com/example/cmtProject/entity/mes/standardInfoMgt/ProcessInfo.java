@@ -38,4 +38,7 @@ public class ProcessInfo {
 	
 	@Column(name = "PRC_COMMENT")
 	private String prcComment;
+	
+	@Column(name = "PRC_TYPE_NAME_KO")
+	private String prcTypeNameKo;
 }

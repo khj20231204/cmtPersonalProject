@@ -21,13 +21,9 @@
 		LEFT JOIN PRODUCT_TYPE P2
 		  ON P.PDT_TYPE = P2.PDT_TYPE_CODE
 	   WHERE P.PDT_USEYN = 'Y'
+	   ORDER BY PDT_NO DESC
 	</select>
 
-<!--     <select id="list" resultType="com.example.cmtProject.entity.mes.standardInfoMgt.Products"> -->
-<!--       SELECT *  -->
-<!-- 		FROM PRODUCTS -->
-<!--     </select> -->
-	
 	<!-- 선택 조회 -->
     <select id="select" resultType="com.example.cmtProject.entity.mes.standardInfoMgt.Products">
         SELECT *
@@ -59,7 +55,10 @@
     <update id="pdtMainUpdate" parameterType="com.example.cmtProject.dto.mes.standardInfoMgt.ProductsEditDTO">
     UPDATE PRODUCTS 
     <set>
-    	<if test="columnName == 'pdtTypeName'">
+    	<if test="columnName == 'pdtCode'">
+            PDT_CODE = #{value}
+        </if>
+    	<if test="columnName == 'pdtType'">
             PDT_TYPE = #{value}
         </if>
         <if test="columnName == 'pdtName'">
@@ -86,7 +85,92 @@
         <if test="columnName == 'pdtComments'">
             PDT_COMMENTS = #{value}
         </if>
+        <if test="columnName == 'prcTypeCode'">
+          	PRC_TYPE_CODE = #{value}
+        </if>
     </set>
     WHERE PDT_NO = #{pdtNo}
 	</update>
+	
+	<select id="selectMaxFP">
+	   SELECT PDT_CODE
+		 FROM PRODUCTS
+		WHERE PDT_CODE LIKE '%FP%'
+		ORDER BY PDT_CODE DESC
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<select id="selectMaxWIP">
+	   SELECT PDT_CODE
+		 FROM PRODUCTS
+		WHERE PDT_CODE LIKE '%WIP%'
+		ORDER BY PDT_CODE DESC
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+	
+	<insert id="insertPdtExcel" parameterType="com.example.cmtProject.dto.mes.standardInfoMgt.ProductsDTO">
+		MERGE INTO PRODUCTS tgt
+		USING (
+	    SELECT  #{pdtNo} AS PDT_NO,
+	            #{pdtCode} AS PDT_CODE,
+	            #{pdtName} AS PDT_NAME,
+	            #{pdtShippingPrice} AS PDT_SHIPPING_PRICE,
+	            #{pdtComments} AS PDT_COMMENTS,
+	            #{pdtUseyn} AS PDT_USEYN,
+	            #{mtlTypeCode} AS MTL_TYPE_CODE,
+	            #{pdtWeight} AS PDT_WEIGHT,
+	            #{wtTypeCode} AS WT_TYPE_CODE,
+	            #{pdtSize} AS PDT_SIZE,
+	            #{ltTypeCode} AS LT_TYPE_CODE,
+	            #{pdtType} AS PDT_TYPE,
+	            #{prcTypeCode} AS PRC_TYPE_CODE
+	    FROM dual
+		) src
+		ON (tgt.PDT_NO = src.PDT_NO)
+		WHEN MATCHED THEN
+		    UPDATE SET 
+		        tgt.PDT_CODE = src.PDT_CODE,
+		        tgt.PDT_NAME = src.PDT_NAME,
+		        tgt.PDT_SHIPPING_PRICE = src.PDT_SHIPPING_PRICE,
+		        tgt.PDT_COMMENTS = src.PDT_COMMENTS,
+		        tgt.PDT_USEYN = src.PDT_USEYN,
+		        tgt.MTL_TYPE_CODE = src.MTL_TYPE_CODE,
+		        tgt.PDT_WEIGHT = src.PDT_WEIGHT,
+		        tgt.WT_TYPE_CODE = src.WT_TYPE_CODE,
+		        tgt.PDT_SIZE = src.PDT_SIZE,
+		        tgt.LT_TYPE_CODE = src.LT_TYPE_CODE,
+		        tgt.PDT_TYPE = src.PDT_TYPE,
+		        tgt.PRC_TYPE_CODE = src.PRC_TYPE_CODE
+		WHEN NOT MATCHED THEN
+		    INSERT (
+		        PDT_NO, 
+		        PDT_CODE, 
+		        PDT_NAME, 
+		        PDT_SHIPPING_PRICE, 
+		        PDT_COMMENTS, 
+		        PDT_USEYN, 
+		        MTL_TYPE_CODE,
+		        PDT_WEIGHT,
+		        WT_TYPE_CODE,
+		        PDT_SIZE,
+		        LT_TYPE_CODE,
+		        PDT_TYPE,
+		        PRC_TYPE_CODE
+		    )
+		    VALUES (
+		        src.PDT_NO,
+		        src.PDT_CODE,
+		        src.PDT_NAME,
+		        src.PDT_SHIPPING_PRICE,
+		        src.PDT_COMMENTS,
+		        src.PDT_USEYN,
+		        src.MTL_TYPE_CODE,
+		        src.PDT_WEIGHT,
+		        src.WT_TYPE_CODE,
+		        src.PDT_SIZE,
+		        src.LT_TYPE_CODE,
+		        src.PDT_TYPE,
+		        src.PRC_TYPE_CODE
+		    )
+	</insert>
 </mapper>

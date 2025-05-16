@@ -45,4 +45,6 @@ public class ProductTotalDTO {
     private String pdtTypeCode;
 	private String pdtTypeName;
 	private String pdtTypeUseyn;
+	private String prcTypeCode;
+	private String prcTypeNameKo;
 }

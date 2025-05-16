@@ -18,6 +18,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -84,6 +85,13 @@ public class BomInfoController {
 		
 		List<ProcessInfo> processList = processInfoRepository.findAll();
 		model.addAttribute("processList", processList);
+		
+		//제품 tooltip에 출력할 FP중 가장 큰 FP와 WIP중 가장 큰 WIP
+		String maxFP = productsService.selectMaxFP();
+		String maxWIP = productsService.selectMaxWIP();
+		
+		model.addAttribute("maxFP", maxFP);
+		model.addAttribute("maxWIP", maxWIP);
 		
 		//단위 데이터 models
 		bomInfoModels.commonBomInfoModels(model);
@@ -249,7 +257,7 @@ public class BomInfoController {
 	@GetMapping("/pdteditexe")
 	public int pdteditexep(@ModelAttribute ProductsEditDTO pdtEditDto) throws JsonMappingException, JsonProcessingException {
 		
-		//log.info(pdtEditDto.toString());
+		log.info(pdtEditDto.toString());
 		
 		int resultEdit = productsService.pdtMainUpdate(pdtEditDto); 
 		
@@ -261,7 +269,7 @@ public class BomInfoController {
 	@GetMapping("/bomeditexe")
 	public int bomeditexep(@ModelAttribute BomEditDTO bomEditDto) throws JsonMappingException, JsonProcessingException {
 		
-		//log.info(bomEditDto.toString());
+		log.info(bomEditDto.toString());
 		
 		int resultEdit = bomInfoService.bomMainUpdate(bomEditDto); 
 		
@@ -269,20 +277,47 @@ public class BomInfoController {
 		return 1;
 	}
 	
-	//BOM페이지에서 상품 등록 
+	//제품 등록 
+	@Transactional
 	@PostMapping("/pdtRegister")
-	public String pdtRegister(@ModelAttribute ProductsDTO productsDTO) {
+	public String pdtRegister(@RequestBody Map<String, List<ProductsDTO>> productsDTO) {
 		
-		productsDTO.setPdtNo(null);
-		productsDTO.setPdtUseyn("Y");
-		ProductsDTO dto = productsDTO;
+		System.out.println("productsDTO:" + productsDTO);
 		
-		//DTO를 builder를 이용해서 entity로 변환
-		Products entity = dto.toEntity();
-		
-		productsRepository.save(entity);
-		log.info(entity.toString());
+		for(Map.Entry<String, List<ProductsDTO>> m : productsDTO.entrySet()) {
+			
+			for(ProductsDTO pdtDto : m.getValue()) {
+				
+				pdtDto.setPdtNo(null);
+				pdtDto.setPdtUseyn("Y");
+				ProductsDTO dto = pdtDto;
+				
+				//DTO를 builder를 이용해서 entity로 변환
+				Products entity = dto.toEntity();
+				
+				productsRepository.save(entity);
+				log.info(entity.toString());
+			}
+		}
 		
 		return "redirect:bom-info";
+	}
+	
+	//엑셀 파일 저장
+	@Transactional
+	@PostMapping("/pdtExcelRegister")
+	public String pdtExcelRegister(@RequestBody Map<String, List<ProductsDTO>> productsDTO) {
+		
+		System.out.println("productsDTO:" + productsDTO);
+		
+		for(Map.Entry<String, List<ProductsDTO>> m : productsDTO.entrySet()) {
+			
+			for(ProductsDTO pdtDto : m.getValue()) {
+				pdtDto.setPdtUseyn("Y");
+				productsService.insertPdtExcel(pdtDto);
+			}
+		}
+		
+		return "success";
 	}
 }
