@@ -3,6 +3,7 @@ package com.example.cmtProject.controller.mes.standardInfoMgt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ProcessHandle.Info;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +27,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.cmtProject.controller.mes.standardInfoMgt.commModels.BomInfoModels;
 import com.example.cmtProject.dto.mes.standardInfoMgt.BomEditDTO;
+import com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoTotalDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductTotalDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsEditDTO;
+import com.example.cmtProject.dto.mes.standardInfoMgt.UnitCountDTO;
 import com.example.cmtProject.entity.erp.salesMgt.SalesOrder;
 import com.example.cmtProject.entity.mes.standardInfoMgt.Materials;
 import com.example.cmtProject.entity.mes.standardInfoMgt.ProcessInfo;
@@ -42,6 +46,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -68,15 +73,16 @@ public class BomInfoController {
 	@GetMapping("/bom-info")
 	public String bomInfo(Model model) throws Exception {
 		
-		//삭제되면 USERYN을 사용해야 하기 때문에 REPOSITORY 사용 못 함
-		//List<Products> productList = productsRepository.findAll();
-		
-		//products만으로는 한글을 그리드의 select박스에 출력할 수 없다. 그래서 ProductTotalDTO을 만듦
-		//List<Products> productList = productsService.list();
-		
+		//------------ PRODUCTS --------------------
 		List<ProductTotalDTO> productList = productsService.getProductTotalList();
 		model.addAttribute("productList", productList);
 		
+		//하단 bom 그리드에 빈 데이터 전송 왜?
+		/* 아무것도 모르는 팀원이 환경 설정을 이상하게 했다.
+		 * 최초 로딩시에는 컬럼명이 소문자, 
+		 * 이후 제품 그리드에서 선택했을 때는 ajax로 받으니깐 대문자로 받게된다.
+		 * 그리드를 따로 둬야한다.
+		 * */
 		List<BomInfoTotalDTO> bomList = new ArrayList<>();
 		model.addAttribute("bomList", bomList);
 		
@@ -95,9 +101,28 @@ public class BomInfoController {
 		
 		//단위 데이터 models
 		bomInfoModels.commonBomInfoModels(model);
-		
-		//th:object에서 사용할 객체 생성
-	 	model.addAttribute("ProductsDTO", new ProductsDTO());
+	 	
+	 	//------------ BOM --------------------
+	 	
+	 	//투입 단위 가져오기
+	 	List<UnitCountDTO> bomUnitCountList = bomInfoService.selectBomUnitCount();
+	 	model.addAttribute("bomUnitCountList", bomUnitCountList);
+	 	
+	 	//등록 modal에서 사용할 pdtCode
+	 	//상위 코드는 products에서만 가져온다, 하위 코드는 products와 materials에서 가져온다
+	 	List<String> childCodePdtList = productsService.selectChildItemCodePdt();
+	 	List<String> parentCodePdtList = productsService.selectParentItemCodePdt();
+	 	
+	 	model.addAttribute("childCodePdtList", childCodePdtList);
+	 	model.addAttribute("parentCodePdtList", parentCodePdtList);
+	 	
+	 	//th:object에서 사용할 객체 생성
+	 	BomInfoDTO bomInfoDto = new BomInfoDTO();
+	 	bomInfoDto.setBomNo(000L);
+	 	model.addAttribute("bomInfoDto", bomInfoDto);
+	 	
+	 	//----------------------------------------
+
 	 	
 		return "mes/standardInfoMgt/bomInfo";
 	}
@@ -231,9 +256,9 @@ public class BomInfoController {
 				"data", bomData
 			);
 	}
-	//----------------------------------------- 끝 ------------------------------------
 	
-	//엑셀 파일 다운로드
+	/*
+	//엑셀 파일 다운로드 - 자바스크립트에서 바로 다운로드한다
 	@GetMapping("/excel-file-down")
 	public void downloadExcel(HttpServletResponse response) throws IOException {
 	    String fileName = "bom_form.xls";
@@ -250,74 +275,100 @@ public class BomInfoController {
 	    // 파일 내용을 응답 스트림에 복사
 	    StreamUtils.copy(inputStream, response.getOutputStream());
 	    response.flushBuffer();
+	}*/
+	
+	@ResponseBody
+	@GetMapping("/bomAll")
+	public List<BomInfoDTO> bomAll(){
+		
+		List<BomInfoDTO> bomAllList = bomInfoService.bomAll();
+		
+		return bomAllList;
 	}
 	
-	//상품 그리드에서 바로 수정
-	@ResponseBody
-	@GetMapping("/pdteditexe")
-	public int pdteditexep(@ModelAttribute ProductsEditDTO pdtEditDto) throws JsonMappingException, JsonProcessingException {
-		
-		log.info(pdtEditDto.toString());
-		
-		int resultEdit = productsService.pdtMainUpdate(pdtEditDto); 
-		
-		return resultEdit;
-	}
 	
 	//BOM 그리드에서 바로 수정
 	@ResponseBody
 	@GetMapping("/bomeditexe")
 	public int bomeditexep(@ModelAttribute BomEditDTO bomEditDto) throws JsonMappingException, JsonProcessingException {
 		
-		log.info(bomEditDto.toString());
+		//log.info(bomEditDto.toString());
+		
+		//products에 있는 제품인지 확인
+		if(bomEditDto.getColumnName().equals("CHILD_ITEM_CODE") || bomEditDto.getColumnName().equals("PARENT_PDT_CODE")) {
+			
+			int count = bomInfoService.selectCheckPdtList(bomEditDto.getValue());
+			
+			if(count <= 0) {
+				return 0;
+			}
+		}
 		
 		int resultEdit = bomInfoService.bomMainUpdate(bomEditDto); 
 		
-		//return resultEdit;
 		return 1;
 	}
 	
-	//제품 등록 
-	@Transactional
-	@PostMapping("/pdtRegister")
-	public String pdtRegister(@RequestBody Map<String, List<ProductsDTO>> productsDTO) {
+	//public String save(BindingResult result, @Valid SalesOrderRequest req) ❌ 작동하지 않음
+	//BindingResult는 반드시 @Valid 다음에 위치해야 함
+	//@ModelAttribute("bomInfoDto") : ModelAttribute안에 파라미터 bomInfoDto 명시!
+	@PostMapping("/bomRegister")
+	public String bomRegister(@ModelAttribute("bomInfoDto") @Valid BomInfoDTO bomInfoDto, BindingResult bindingResult, Model model) {
 		
-		System.out.println("productsDTO:" + productsDTO);
-		
-		for(Map.Entry<String, List<ProductsDTO>> m : productsDTO.entrySet()) {
+		 if (bindingResult.hasErrors()) {
+			 
+			//------------ PRODUCTS 정보 넘기기 --------------------
+			List<ProductTotalDTO> productList = productsService.getProductTotalList();
+			model.addAttribute("productList", productList);
 			
-			for(ProductsDTO pdtDto : m.getValue()) {
-				
-				pdtDto.setPdtNo(null);
-				pdtDto.setPdtUseyn("Y");
-				ProductsDTO dto = pdtDto;
-				
-				//DTO를 builder를 이용해서 entity로 변환
-				Products entity = dto.toEntity();
-				
-				productsRepository.save(entity);
-				log.info(entity.toString());
-			}
-		}
-		
-		return "redirect:bom-info";
-	}
-	
-	//엑셀 파일 저장
-	@Transactional
-	@PostMapping("/pdtExcelRegister")
-	public String pdtExcelRegister(@RequestBody Map<String, List<ProductsDTO>> productsDTO) {
-		
-		System.out.println("productsDTO:" + productsDTO);
-		
-		for(Map.Entry<String, List<ProductsDTO>> m : productsDTO.entrySet()) {
+			List<Materials> materialsList = materialsOrderRepository.findAll(); 
+			model.addAttribute("materialsList", materialsList);
 			
-			for(ProductsDTO pdtDto : m.getValue()) {
-				pdtDto.setPdtUseyn("Y");
-				productsService.insertPdtExcel(pdtDto);
-			}
-		}
+			List<ProcessInfo> processList = processInfoRepository.findAll();
+			model.addAttribute("processList", processList);
+			
+			String maxFP = productsService.selectMaxFP();
+			String maxWIP = productsService.selectMaxWIP();
+			
+			model.addAttribute("maxFP", maxFP);
+			model.addAttribute("maxWIP", maxWIP);
+			
+		 	//------------ BOM 정보 넘기기 --------------------
+		 	
+		 	//투입 단위 가져오기
+		 	List<UnitCountDTO> bomUnitCountList = bomInfoService.selectBomUnitCount();
+		 	model.addAttribute("bomUnitCountList", bomUnitCountList);
+		 	
+		 	//등록 modal에서 사용할 pdtCode
+		 	//상위 코드는 products에서만 가져온다, 하위 코드는 products와 materials에서 가져온다
+		 	List<String> childCodePdtList = productsService.selectChildItemCodePdt();
+		 	List<String> parentCodePdtList = productsService.selectParentItemCodePdt();
+		 	
+		 	model.addAttribute("childCodePdtList", childCodePdtList);
+		 	model.addAttribute("parentCodePdtList", parentCodePdtList);
+		 	
+		 	bomInfoModels.commonBomInfoModels(model);
+		 	
+		 	//------------- 이전 DTO값 그대로 넘기기 ----------------------------------------
+			 
+		 	model.addAttribute("bomInfoDto", bomInfoDto);
+			 
+		 	//--------------------------------------------------------------------------
+	    	
+			log.error("Validation 오류 발생!"); 	
+	    	
+			bindingResult.getFieldErrors().forEach(error -> {
+				 System.out.println("Field: " + error.getField());
+				 System.out.println("Rejected value: " + error.getRejectedValue());
+				 System.out.println("Message: " + error.getDefaultMessage());
+	        });
+	    	
+			return "mes/standardInfoMgt/bomInfo";
+		 }	
 		
-		return "success";
+		 //데이터 입력
+		 bomInfoService.insertBomInfo(bomInfoDto);
+		
+		 return "redirect:/bom/bom-info";
 	}
 }

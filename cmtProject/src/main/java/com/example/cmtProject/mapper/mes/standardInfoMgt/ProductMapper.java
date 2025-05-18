@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductTotalDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsEditDTO;
@@ -42,4 +43,13 @@ public interface ProductMapper {
 	//Excel파일 DB에 저장
 	public void insertPdtExcel(ProductsDTO pdtDto);
 
+	//BOM 등록시 상위코드 목록
+	public List<String> selectChildItemCodePdt();
+
+	//BOM 등록시 아위코드 목록
+	public List<String> selectParentItemCodePdt();
+
+	public List<String> selectCheckBomChildCode(String pdtCode);
+
+	public void deletePdtCode(String pdtCode);
 }

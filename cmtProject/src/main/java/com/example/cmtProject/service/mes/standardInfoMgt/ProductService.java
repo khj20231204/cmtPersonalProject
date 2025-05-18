@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductTotalDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsDTO;
 import com.example.cmtProject.dto.mes.standardInfoMgt.ProductsEditDTO;
@@ -65,5 +66,21 @@ public class ProductService {
 
 	public void insertPdtExcel(ProductsDTO pdtDto) {
 		productMapper.insertPdtExcel(pdtDto);
+	}
+
+	public List<String> selectChildItemCodePdt() {
+		return productMapper.selectChildItemCodePdt();
+	}
+
+	public List<String> selectParentItemCodePdt() {
+		return productMapper.selectParentItemCodePdt();
+	}
+
+	public List<String> selectCheckBomChildCode(String pdtCode) {
+		return productMapper.selectCheckBomChildCode(pdtCode);
+	}
+
+	public void deletePdtCode(String pdtCode) {
+		productMapper.deletePdtCode(pdtCode);
 	}
 }

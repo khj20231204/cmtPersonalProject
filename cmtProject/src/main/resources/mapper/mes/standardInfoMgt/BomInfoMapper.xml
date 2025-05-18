@@ -13,6 +13,7 @@
             ,B.CHILD_ITEM_CODE
             ,PARENT_PDT_CODE
             ,ITEM_TYPE
+            ,PARENT_ITEM_TYPE
             ,BOM_QTY
             ,BOM_UNIT
             ,B.BOM_PRC_TYPE
@@ -60,13 +61,25 @@
 		LEFT JOIN PROCESS_INFO P ON B.BOM_PRC_TYPE = P.PRC_TYPE_CODE
 	   WHERE B.CHILD_ITEM_CODE = #{pdtCode}
 		 AND B.USE_YN = 'Y'
-	   ORDER BY BOM_NO
+	   ORDER BY BOM_NO DESC
 	</select>  
 	
 	<!-- 기준 정보에서 수정, MTL_NAME이 columnName이지만 실제 값은 MTL_CODE 값을 가져온다. 그리드의 셀렉트 부분 때문 -->
     <update id="bomMainUpdate" parameterType="com.example.cmtProject.dto.mes.standardInfoMgt.BomEditDTO">
     UPDATE BOM
     <set>
+        <if test="columnName == 'CHILD_ITEM_CODE'">
+            CHILD_ITEM_CODE = #{value}
+        </if>
+        <if test="columnName == 'PARENT_PDT_CODE'">
+            PARENT_PDT_CODE = #{value}
+        </if>
+	   	<if test="columnName == 'ITEM_TYPE'">
+	    	ITEM_TYPE = #{value}
+	   	</if>
+	   	<if test="columnName == 'PARENT_ITEM_TYPE'">
+	    	PARENT_ITEM_TYPE = #{value}
+	   	</if>
         <if test="columnName == 'BOM_QTY'">
             BOM_QTY = CAST(#{value} AS NUMBER)
         </if>
@@ -85,5 +98,76 @@
     </set>
     WHERE BOM_NO = #{BomNo}
 	</update>
+	
+	<select id="bomAll" resultType="com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoDTO">
+		SELECT 
+			BOM_NO
+			,CHILD_ITEM_CODE
+			,PARENT_PDT_CODE
+			,ITEM_TYPE
+			,PARENT_ITEM_TYPE
+			,BOM_QTY
+			,BOM_UNIT
+			,BOM_PRC_TYPE
+			,BOM_DATE
+			,COMMENTS
+			,USE_YN
+		FROM BOM
+	   WHERE USE_YN = 'Y'
+	   ORDER BY BOM_NO DESC
+	</select>
 
+	<!-- COMMONCODE_DETAIL에서 투입단위 가져오기 -->
+	<select id="selectBomUnitCount" resultType="com.example.cmtProject.dto.mes.standardInfoMgt.UnitCountDTO">
+		SELECT 
+			CMN_CODE 
+			,CMN_DETAIL_NAME 
+			,CMN_DETAIL_CONTENT
+		  FROM COMMONCODE_DETAIL
+		 WHERE CMN_CODE = 'UNIT_COUNT'
+	</select>
+
+	<!-- 수정한 코드가 PRODUCTS에 있는지 확인 -->
+	<select id="selectCheckPdtList">
+		SELECT COUNT(PDT_CODE)
+		  FROM PRODUCTS
+		 WHERE PDT_CODE = #{value}
+		   AND PDT_USEYN = 'Y'
+	</select>
+
+	<insert id="insertBomInfo" parameterType="com.example.cmtProject.dto.mes.standardInfoMgt.BomInfoDTO">
+		INSERT INTO BOM(
+			BOM_NO
+			,CHILD_ITEM_CODE
+			,PARENT_PDT_CODE
+			,ITEM_TYPE
+			,PARENT_ITEM_TYPE
+			,BOM_QTY
+			,BOM_UNIT
+			,BOM_PRC_TYPE
+			,BOM_DATE
+			,COMMENTS
+			,USE_YN
+			)
+			VALUES(
+			SEQ_BOM_NO.NEXTVAL
+			,#{childItemCode}
+			,#{parentPdtCode}
+			,#{itemType}
+			,#{parentItemType}
+			,#{bomQty}
+			,#{bomUnit}
+			,#{bomPrcType}
+			,#{bomDate}
+			,null
+			,'Y'
+			)
+	</insert>
+	
+	<!-- BOM 삭제 -->
+	<update id="deleteChildItemCode">
+	 UPDATE BOM 
+		SET USE_YN = 'N' 
+	  WHERE CHILD_ITEM_CODE = #{pdtCode}
+	</update>
 </mapper>

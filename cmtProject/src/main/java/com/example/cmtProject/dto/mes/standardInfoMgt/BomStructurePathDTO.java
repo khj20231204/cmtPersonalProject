@@ -17,6 +17,7 @@ public class BomStructurePathDTO {
     private String childItemCode;
     private String parentPdtCode;
     private String itemType;
+    private String parentItemType; //부모 코드 유형
     private String bomPrcType;
     private String bomQty;
     private String bomUnit;

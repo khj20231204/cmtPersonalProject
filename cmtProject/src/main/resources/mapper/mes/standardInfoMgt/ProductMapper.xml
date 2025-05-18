@@ -29,6 +29,7 @@
         SELECT *
         FROM PRODUCTS
         WHERE PDT_CODE = #{pdtCode}
+        AND PDT_USEYN = 'Y'
     </select>
     
 	<!-- 등록 -->
@@ -92,6 +93,7 @@
     WHERE PDT_NO = #{pdtNo}
 	</update>
 	
+	<!-- 등록에서 사용할 FP의 최대값 -->
 	<select id="selectMaxFP">
 	   SELECT PDT_CODE
 		 FROM PRODUCTS
@@ -100,6 +102,7 @@
 		FETCH FIRST 1 ROWS ONLY
 	</select>
 	
+	<!-- 등록에서 사용할 WIP의 최대값 -->
 	<select id="selectMaxWIP">
 	   SELECT PDT_CODE
 		 FROM PRODUCTS
@@ -173,4 +176,32 @@
 		        src.PRC_TYPE_CODE
 		    )
 	</insert>
+	
+	<!-- BOM 모달 등록에서 상위코드 목록 -->
+	<select id="selectChildItemCodePdt">
+		SELECT PDT_CODE FROM PRODUCTS
+	</select>
+	
+	<!-- BOM 모달 등록에서 하위코드 목록 -->
+	<select id="selectParentItemCodePdt">
+		SELECT PDT_CODE FROM PRODUCTS
+		UNION
+		SELECT MTL_CODE FROM MATERIALS
+	</select>
+	
+	<!-- 삭제 전 BOM의 childCode 체크 -->
+	<select id="selectCheckBomChildCode">
+		SELECT CHILD_ITEM_CODE
+		  FROM BOM
+		 WHERE PARENT_PDT_CODE = #{pdtCode}
+		   AND USE_YN = 'Y'
+	</select>
+	
+	<!-- 삭제 -->
+	<update id="deletePdtCode">
+	 UPDATE PRODUCTS 
+		SET PDT_USEYN = 'N' 
+	  WHERE PDT_CODE = #{pdtCode}
+	</update>
+	
 </mapper>

@@ -186,11 +186,10 @@ public class saleController {
 	
 	//public String save(BindingResult result, @Valid SalesOrderRequest req) ❌ 작동하지 않음
 	//BindingResult는 반드시 @Valid 다음에 위치해야 함
+	//@ModelAttribute("salesOrder") : ModelAttribute안에 파라미터 salesOrder 명시!
 	@Transactional
 	@PostMapping("/soregister")
 	public String soRegister(@ModelAttribute("salesOrder") @Valid SalesOrderDTO salesOrder,  BindingResult bindingResult, Model model) {
-		
-		System.out.println("========================== salesOrder:" + salesOrder);
 		
 	    if (bindingResult.hasErrors()) {
 	    	

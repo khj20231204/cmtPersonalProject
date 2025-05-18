@@ -17,6 +17,7 @@ public class BomInfoTotalDTO {
 	private String childItemCode; 	// 상위 코드
     private String parentPdtCode; 	// 하위 코드
     private String itemType; 	//코드 유형(RAW_MATERIAL / SEMI_FINISHED)
+    private String parentItemType; //부모 코드 유형
     private String bomQty; 		// 투입 수량
     private String bomUnit; 	// 투입 단위 (예: EA, TON)
     private String bomPrcType; 	// 투입 공정 단계 (예: PR, WE, PA, SA)

@@ -86,6 +86,42 @@
 		   	visibility: visible;
 		}
 		
+		.img-wrapper-bom {
+			position: relative;
+		   	display: inline-block;
+		}
+
+		.img-tooltip-bom {
+			width: 600px;       
+			height: 150px;      
+			visibility: hidden;
+		   	background-color: rgb(255, 255, 255);
+		   	color: grey;
+		   	text-align: left;
+		   	border-radius: 4px;
+			border: solid dimgrey 1px;
+		   	/* padding: 5px; */
+		   	position: absolute;
+		   	top: -120%; /* 이미지 아래 */
+		   	left: calc(120%); /* 기존보다 오른쪽으로 10px */
+		   	/*transform: translateX(-50%);*/
+		   	white-space: pre;
+		   	z-index: 1;
+		   	/* margin-top: 5px; */
+		   	font-size: 14px;
+		}
+
+		.img-wrapper-bom:hover .img-tooltip-bom {
+		   	visibility: visible;
+		}
+		
+		.error {
+			color: red;
+		    font-size: 0.9em;
+			margin-left: 150px;
+		}
+        
+		
     </style>																																																																																																																																																					
 </head>
 <body>
@@ -102,7 +138,7 @@
 	    <div class="row mb-3">
 	        <div class="col-md-4">
 	            <div class="input-group">
-	                <input type="text" id="searchTxt" class="form-control" placeholder="검색어를 입력해주세요.">
+	                <input type="text" id="pdtSearchTxt" class="form-control" placeholder="검색어를 입력해주세요.">
 	                <button class="btn btn-outline-secondary" type="button">
 	                    <i class="bi bi-search"></i>
 	                </button>
@@ -113,13 +149,13 @@
 		<div class="text-end filediv">
             <input type="file" id="fileUpload" hidden>
             <input type="file" class="form-control" id="fileInput" accept=".xlsx" style="width: 400px;">
-            <button class="btn btn-upload" style="margin-right: 10px;margin-left: 10px;width: 160px;height: 40px;" id="pdtExcelUpBtn"><i class="fa-solid fa-file-arrow-up"></i>제품 엑셀 업로드</button>
-            <button class="btn btn-download" style="width: 170px;height: 40px;" id="pdtExcelDownBtn"><i class="fa-solid fa-file"></i>제품 엑셀 다운로드</button>
+            <button class="btn btn-upload" style="margin-left: 10px;width: 190px;height: 40px;" id="pdtExcelUpBtn"><i class="fa-solid fa-file-arrow-up"></i>제품 엑셀 업로드</button>
+            <button class="btn btn-download" style="margin-left: 10px;width: 210px;height: 40px;" id="pdtExcelDownBtn"><i class="fa-solid fa-file"></i>제품 엑셀 다운로드</button>
 			<div class="img-wrapper-excel" style="display: flex;">
 				&nbsp;<img src="https://raw.githubusercontent.com/khj20231204/cmtPersonalProject/refs/heads/main/readmeImg/excel-exclamation-mark.png" style="height:30px;width:30px;cursor: pointer;">
 				<div id="outputDiv-excel" class="img-tooltip-excel"></div>
 			</div>
-			<div id="pdtBasic"  class="text-end mb-2" style="margin-left: 400px;">
+			<div id="pdtBasic"  class="text-end mb-2" style="margin-left: 300px;">
 				<button class="btn btn-primary btn-m" id="registerPdtBtn"><i class="fa-solid fa-database"></i> 제품 등록</button>
 				<button class="btn btn-outline-danger  btn-m" id="delPdtBtn"><i class="fa-solid fa-trash-can"></i>제품 삭제</button>
 				<button class="btn btn-primary btn-m" id="registerExePdtBtn" style="display: none;"><i class="fa-solid fa-check"></i> 등록 실행</button>
@@ -149,32 +185,26 @@
 		
 		<div class="card-body"> <!-- 여기에 내용작성 -->
 				
-		    <div class="row mb-3">
-		        <!--<div class="col-md-3">
-		            <input type="month" class="form-control" placeholder="등록월">
-		        </div>-->
-		        <div class="col-md-4">
+		 	<div style="display: flex;">
+		        <div class="col-md-4">  
 		            <div class="input-group">
-		                <input type="text" class="form-control" placeholder="BOM명을 입력해주세요.">
+		                <input type="text" id="bomSearhTxt" class="form-control" placeholder="BOM명을 입력해주세요.">
 		                <button class="btn btn-outline-secondary" type="button">
 		                    <i class="bi bi-search"></i>
 		                </button>
 		            </div>
 		        </div>
-		    </div>
-
-			<div class="text-end filediv">
-	            <input type="file" id="fileUpload" hidden>
-	            <input type="file" class="form-control" id="fileInput" accept=".xlsx" style="width: 400px;">
-	            <button class="btn btn-upload" style="margin-right: 10px;margin-left: 10px;" id="pdtExcelUpBtn">BOM 엑셀 업로드</button>
-	            <button class="btn btn-download" id="pdtExcelDownBtn">BOM 엑셀 다운로드</button>
-				<div class="text-end mb-2">
-					<button type="button" class="btn btn-outline-primary" style="margin-left: 400px;"  data-bs-toggle="modal" data-bs-target="#pdtModal">
-					    BOM 등록
-					</button>
-			    </div>
-	        </div>	
-		
+				
+				<div class="col-md-5" style="display: flex;">
+					<button type="button" id="bomAllSearchBtn" style="margin-left: 10px;" class="btn btn-primary btn-m"><i class="fa-solid fa-film"></i> BOM 전체 조회</button>
+					<button type="button" id="bomRegBtn" style="margin-left: 10px;" class="btn btn-primary btn-m" data-bs-toggle="modal" data-bs-target="#bomRegModal"><i class="fa-solid fa-database"></i> BOM 등록</button>
+					<div class="img-wrapper-bom">
+						&nbsp;<img src="https://raw.githubusercontent.com/khj20231204/cmtPersonalProject/refs/heads/main/readmeImg/excel-exclamation-mark.png" style="height:30px;width:30px;cursor: pointer;">
+						<div id="outputDiv-bom" class="img-tooltip-bom"></div>
+					</div>
+				</div>
+			</div>
+			
 			<!-- grid 사용 -->
 		    <h6 class="section-title">BOM</h6>
 			<div id="bomGrid"></div>
@@ -182,109 +212,132 @@
 		</div><!-- <div class="card-body"> -->
 	</div><!-- <div class="card"> -->
 
-	<!--  모달 창 시작 -->
-	<div class="modal fade" id="pdtModal" tabindex="-1" aria-labelledby="pdtModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg">
+	<!-- 모달 시작 -->
+	<div class="modal fade" id="bomRegModal" tabindex="-1">
+	    <div class="modal-dialog modal-dialog-centered modal-lg">
 	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title" id="pdtModalLabel">제품 등록</h5>
+	            
+				<div class="modal-header">
+	                <h5 class="modal-title" id="exampleModalCenterTitle">BOM 등록</h5>
 	            </div>
-	            <form method="post" th:action="@{/bom/pdtRegister}" th:object="${ProductsDTO}">
-	                <div class="modal-body">
-						
-	                    <div class="form-group">
-		                    <label for="empName">제품 코드</label>
-	                        <input type="text" id="pdtCodeTxt" class="form-control" th:field="*{pdtCode}" placeholder="제품 코드" required>
-	                    </div>
-	                    
-	                    <div class="form-group">
-		                    <label for="empName">제품명</label>
-	                        <input type="text" id="pdtNameTxt" class="form-control" th:field="*{pdtName}" placeholder="제품명" required>
-	                    </div>
-	                    
-	                    <div class="form-group">
-		                    <label for="empName">제품 가격</label>
-	                        <input type="text" id="pdtPriceTxt" class="form-control" th:field="*{pdtShippingPrice}" placeholder="제품 가격" required>
-	                    </div>
-	                    
-	                    <div class="form-group" required>
-	                    	<label for="pdtTypeSel">제품 유형</label>
-	                       	<select id="pdtTypeSel" class="form-select" th:field="*{pdtType}">
-							<option th:each="pdtType : ${productTypeList}"
-									th:value="${pdtType.pdtTypeCode}"
-									th:text="${pdtType.pdtTypeName}">적용</option>
-				            </select>
-	                    </div>
-                    	 
-						<div class="form-group" >
-							<label for="mtlType">자재 타입</label>
-	                       	<select id="mtlType" class="form-select" th:field="*{mtlTypeCode}">
-				                <option th:each="mtlType : ${materialTypeList}"
-									th:value="${mtlType.mtlTypeCode}"
-									th:text="${mtlType.mtlTypeName}">적용</option>
-				            </select>
-                    	</div>    
-                    	
-                    	<div class="form-group">
-		                    <label for="weightTxt">무게</label>
-	                        <input type="text" id="weightTxt" class="form-control" th:field="*{pdtWeight}" placeholder="무게" required>
-	                    </div>
-                    
-                    	<div class="form-group" >
-							<label for="wtUnitSel">무게 단위</label>
-	                       	<select id="wtUnitSel" class="form-select" th:field="*{wtTypeCode}">
-				                <option th:each="wtUnit : ${weightUnitList}"
-									th:value="${wtUnit.wtTypeCode}"
-									th:text="${wtUnit.wtTypeSymbol}">적용</option>
-				            </select>
-                    	</div>  
-                    	 
-                    	 <div class="form-group">
-		                    <label for="lengthTxt">길이</label>
-	                        <input type="text" id="lengthTxt" class="form-control" th:field="*{pdtSize}" placeholder="길이" required>
-	                    </div>
-                   		 
-	                    <div class="form-group" >
-							<label for="lenUnitSel">길이 단위</label>
-	                       	<select id="lenUnitSel" class="form-select" th:field="*{ltTypeCode}">
-				                <option th:each="lenUnit : ${lengthUnitList}"
-									th:value="${lenUnit.ltTypeCode}"
-									th:text="${lenUnit.ltTypeSymbol}">적용</option>
-				            </select>
-                    	</div> 
-	                    
-	                    <div class="form-group">
-		                    <label for="commentTxt">비고</label>
-	                        <input type="text" th:field="*{pdtComments}" class="form-control" placeholder="비고">
-	                    </div>
-	                    
-	                </div>
-	                <div class="modal-footer">
-	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-	                    <button type="submit" class="btn btn-primary" id="registerBtn">등록</button>
-	                </div>
+				
+				<!-- form 시작 -->
+	            <form id="bomRegModalForm" th:action="@{/bom/bomRegister}" method="POST" th:object="${bomInfoDto}">
+	            
+					<div class="modal-body">
+					
+					<div class="form-group">
+                       <label for="basicInput">BOM 번호</label>
+                       <input type="text" class="form-control" id="bomNo" name="bomNo" th:value="*{bomNo + 1}" readonly="true">
+                   	</div>
+					
+	               	<div class="form-group">
+					<label for="basicInput">상위 코드</label>
+                        <select class="form-select" th:field="*{childItemCode}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${childCodePdtList}"
+									th:value="${code}"  
+							        th:text="${code}">
+							  </option>
+						</select>
+                    </div>
+					<div class="error" th:if="${#fields.hasErrors('childItemCode')}" th:errors="*{childItemCode}">상위코드 오류</div>
+					
+					<div class="form-group">
+					<label for="basicInput">하위 코드</label>
+		                   <select class="form-select" id="parentPdtCode" th:field="*{parentPdtCode}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${parentCodePdtList}"
+									th:value="${code}"  
+							        th:text="${code}">
+							  </option>
+						</select>
+					</div>
+					<div class="error" th:if="${#fields.hasErrors('parentPdtCode')}" th:errors="*{parentPdtCode}">하위코드 오류</div>
+					
+					<div class="form-group">
+					<label for="basicInput">상위 제품 유형</label>
+		                   <select class="form-select" id="itemType" th:field="*{itemType}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${productTypeList}"
+									th:value="${code.pdtTypeCode}"  
+							        th:text="${code.pdtTypeName}">
+							  </option>
+						</select>
+					</div>
+					<div class="error" th:if="${#fields.hasErrors('itemType')}" th:errors="*{itemType}">하위코드 오류</div>
+										
+					<div class="form-group">
+					<label for="basicInput">하위 제품 유형</label>
+		                   <select class="form-select" id="parentItemType" th:field="*{parentItemType}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${productTypeList}"
+									th:value="${code.pdtTypeCode}"  
+							        th:text="${code.pdtTypeName}">
+							  </option>
+						</select>
+					</div>
+					<div class="error" th:if="${#fields.hasErrors('parentItemType')}" th:errors="*{parentItemType}">하위코드 오류</div>
+					
+	                <div class="form-group">
+                        <label for="basicInput">투입 수량</label>
+                        <input type="text" class="form-control" th:field="*{bomQty}" placeholder="숫자만 입력 가능합니다.">
+                    </div>
+					<div class="error" th:if="${#fields.hasErrors('bomQty')}" th:errors="*{bomQty}">하위코드 오류</div>
+					
+					<div class="form-group">
+					<label for="basicInput">투입 단위</label>
+		                   <select class="form-select" id="bomUnit" th:field="*{bomUnit}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${bomUnitCountList}"
+									th:value="${code.cmnDetailName}"  
+							        th:text="${code.cmnDetailName}">
+							  </option>
+						</select>
+					</div>
+					<div class="error" th:if="${#fields.hasErrors('bomUnit')}" th:errors="*{bomUnit}">하위코드 오류</div>
+										
+					<div class="form-group">
+					<label for="basicInput">공정 유형</label>
+		                   <select class="form-select" id="bomPrcType" th:field="*{bomPrcType}">
+							<option value="">-- 선택하세요 --</option>
+							<option th:each="code : ${processInfoList}"
+									th:value="${code.prcTypeCode}"  
+							        th:text="${code.prcTypeNameKo}">
+							  </option>
+						</select>
+					</div>
+					<div class="error" th:if="${#fields.hasErrors('bomPrcType')}" th:errors="*{bomPrcType}">하위코드 오류</div>
+					
+					<div class="form-group date-container">
+			            <label>입력 일자</label>
+			            <input type="date" class="form-control" th:field="*{bomDate}">
+			        </div>
+					<div class="error" th:if="${#fields.hasErrors('bomDate')}" th:errors="*{bomDate}">하위코드 오류</div>
+		
+	            </div><!-- <div class="modal-body"> -->
+				
+	            <div class="modal-footer">
+	                <button type="button" id="bomRegCloseBtn" class="btn btn-light-secondary" data-bs-dismiss="modal">
+	                    <span class="d-none d-sm-block">닫기</span>
+	                </button>
+	                <button type="button" class="btn btn-primary ms-1" id="bomRegExeBtn">
+	                    <span class="d-none d-sm-block">등록</span>
+	                </button>
+	            </div><!-- <div class="modal-footer"> -->
+	            
 	            </form>
-	        </div> <!-- modal-content -->
-	    </div><!-- modal-dialog modal-lg -->
-	</div><!-- modal -->
-	<!-- 모달 끝 -->
+	        </div>
+	    </div>
+	</div><!-- /모달 -->
+	<!-- 모달 끝 -->	
 		
 	<script th:inline="javascript">
 		
 	let pdtRegiCheck = false; //제품 등록일 경우 더블클릭을 막기 위해 설정(제품 등록 : true, 등록 실행과 등록 취소일 때 false)
-		
-	//================================== 그리드 상단 제품 부분 ================================= 
-	let gridData = /*[[${productList}]]*/ [];
-	let materialTypeList = /*[[${materialTypeList}]]*/ [];
-	let lengthUnitList = /*[[${lengthUnitList}]]*/ [];
-	let weightUnitList = /*[[${weightUnitList}]]*/ [];
-	let productTypeList = /*[[${productTypeList}]]*/ [];
-	let processInfoList = /*[[${processInfoList}]]*/ [];
-	
 	let maxFP = [[${maxFP}]];
 	let maxWIP = [[${maxWIP}]];
 	
-	//console.log(maxFP + " ," + maxWIP);
 	document.getElementById('outputDiv').textContent = 
 `
    ❶ 현재 FP의 최대값 FP: ${maxFP},  
@@ -303,8 +356,40 @@
 	제품 번호가 존재하면 수정,
 	제품 번호가 존재하지 않으면 추가됩니다.
 `;
-	
-	
+		
+		
+	document.getElementById('outputDiv-bom').textContent = 
+`
+	✅등록 : 상위코드, 하위코드 모두 등록된 제품코드만 가능 
+	✅제품 삭제에서 삭제하면 BOM은 자동 적용 
+	✅삭제 : BOM에서 상위코드가 존재하는 하위코드는 삭제 불가
+	❗상위코드가 존재하는 하위코드를 삭제하면, 상위코드는 생산할 수 없는 유령제품 상태가 됨.
+	❗데이터 무결성 문제와 구조 붕괴의 위험
+`;
+			
+	//모달 창에서 등록을 누른 후 컨트롤러에서 페이지로 넘어올 때 다시 모달을 띄우기 위한 구문
+	/*<![CDATA[*/
+	/*
+	  let showModal = [[${showModal}]];
+	  if (showModal) {
+	      let modal = new bootstrap.Modal(document.getElementById('bomRegModal'));
+	      modal.show();
+	  }*/
+	  /*]]>*/
+
+	 //모달 띄워주기 유무는 세션에 저장
+	if(sessionStorage.getItem("modalShown")){
+		let modal = new bootstrap.Modal(document.getElementById('bomRegModal'));
+		modal.show();
+	}
+	//================================== 그리드 상단 제품 부분 ================================= 
+	let gridData = /*[[${productList}]]*/ [];
+	let materialTypeList = /*[[${materialTypeList}]]*/ [];
+	let lengthUnitList = /*[[${lengthUnitList}]]*/ [];
+	let weightUnitList = /*[[${weightUnitList}]]*/ [];
+	let productTypeList = /*[[${productTypeList}]]*/ [];
+	let processInfoList = /*[[${processInfoList}]]*/ [];
+
 	//console.log(materialTypeList);
 	//console.log(lengthUnitList);
 	//console.log(weightUnitList);
@@ -544,9 +629,8 @@
 	        bomGrid.setColumns(bomData.COLUMNS);
 			bomGrid.resetData(bomData.DATA); */
 			 
-			//console.log(bomData);
-			
 			bomGrid.resetData(bomData);
+			gridData2 = bomData;
         },
         error: function (err) {
         	console.error("BOM 데이터 로딩 실패", err);
@@ -577,7 +661,7 @@
 		};
 		
 		$.ajax({
-			url: "/bom/pdteditexe",
+			url: "/pdt/pdteditexe",
 			type: "GET",
 			data: sendData,
 			success: function(result) {
@@ -591,11 +675,15 @@
 	
 	//================================== 그리드 하단 bom 부분 =================================
 	
-	let gridData2 = /*[[${bomList}]]*/ [];
+	let gridData2 = /*[[${bomList}]]*/ [];	
 	let processList = /*[[${processList}]]*/ [];
-	let prcSelected = processList.map(item => ({text: item.prcTypeName, label: item.prcTypeName, value: item.prcTypeCode}))
-
-		let bomGrid = new tui.Grid({
+	let bomUnitCountList = /*[[${bomUnitCountList}]]*/ [];
+	
+	let bomUnitCountSelected = bomUnitCountList.map(item => ({text: item.cmnDetailName, label: item.cmnDetailName, value: item.cmnDetailName}));
+	//let productTypeSelected = productTypeList.map(item => ({text: item.pdtTypeName, label: item.pdtTypeName, value: item.pdtTypeCode}));
+	//let processInfoSelected = processInfoList.map(item => ({text: item.prcTypeNameKo, label: item.prcTypeNameKo, value: item.prcTypeCode}));
+	
+	let bomGrid = new tui.Grid({
         el: document.getElementById('bomGrid'), 
 		//data : /*[[${bomList}]]*/ [],
 		data: gridData2,
@@ -624,7 +712,8 @@
 				width: 220,
 				sortable: true, 
 				filter: 'text',
-				align: "center" 
+				align: "center",
+				editor: "text"
             },
             {
                 header: '하위 코드',
@@ -632,16 +721,46 @@
 				width: 220,
 				sortable: true, 
 				filter: 'text',
-				align: "center" 
+				align: "center",
+				editor: "text"
             },
 			{
-                header: '코드 유형',
+                header: '상위 제품 유형',
                 name: 'ITEM_TYPE',
 				width: 220,
 				fontSize: '40',
 				sortable: true, 
 				filter: 'text',
 				align: 'center',
+				editor: {
+					type: 'select',
+					options: {
+						listItems: productTypeSelected 
+					}
+				},
+				formatter: ({ value }) => {
+			    	const pdtValue = productTypeSelected.find(item => item.value === value);
+			    	return pdtValue ? pdtValue.label : value; 
+			    }
+            },
+			{
+                header: '하위 제품 유형',
+                name: 'PARENT_ITEM_TYPE',
+				width: 220,
+				fontSize: '40',
+				sortable: true, 
+				filter: 'text',
+				align: 'center',
+				editor: {
+					type: 'select',
+					options: {
+						listItems: productTypeSelected 
+					}
+				},
+				formatter: ({ value }) => {
+			    	const pdtValue = productTypeSelected.find(item => item.value === value);
+			    	return pdtValue ? pdtValue.label : value; 
+			    }
             },
 			{
                 header: '투입수량',
@@ -659,10 +778,20 @@
 				sortable: true, 
 				filter: 'text',
 				align: 'center',
-				editor: "text"
+				editor: {
+					type: 'select',
+					options: {
+						listItems: bomUnitCountSelected 
+					}
+				},
+				formatter: ({ value }) => {
+			    	const unitValue = bomUnitCountSelected.find(item => item.value === value);
+			    	return unitValue ? unitValue.label : value; 
+			    }
+				
             },
 			{
-                header: '투입공정 단계',
+                header: '공정 유형',
                 name: 'BOM_PRC_TYPE',
 				width: 100,
 				sortable: true, 
@@ -671,11 +800,11 @@
 				editor: {
 					type: 'select',
 					options: {
-						listItems: prcSelected 
+						listItems: processInfoSelected 
 					}
 				},
 				formatter: ({ value }) => {
-			    	const prc = prcSelected.find(item => item.value === value);
+			    	const prc = processInfoSelected.find(item => item.value === value);
 			    	return prc ? prc.label : value; 
 			    }
             },
@@ -739,6 +868,16 @@
 			type: "GET",
 			data: sendData,
 			success: function(result) {
+				
+				if(result === 0){
+
+					Swal.fire({
+					    icon: 'warning',
+					    title: '등록 실패',
+					    text: '제품 코드에 없는 코드입니다.',
+					});
+				}
+				
 				console.log(result);
 			},
 			error: function(errorResult) {
@@ -878,11 +1017,10 @@
 	//================================== JQuery 시작 =================================
 	$(document).ready(function(){
 		
-		let pdtGridData = [...gridData]
-		
 		//products 검색 텍스트 박스
-		$('#searchTxt').on('input', function(){
+		$('#pdtSearchTxt').on('input', function(){
 			
+			let pdtGridData = [...gridData]
 			let searchText = $(this).val().toLowerCase();
 			
 			let filterGridData = pdtGridData.filter(row => {
@@ -892,103 +1030,113 @@
 			});
 			
 			grid.resetData(filterGridData);
-		});
+		}); 
 		
-		//삭제 버튼 클릭시 제품과 BOM에서 삭제가 됨 - PRODUCTS와 BOM 따로 삭제 버전
-		/*
-		$('#deleteBtn').on('click', function(){
-			
-			//제품 그리드 선택
-			var gridChecked = grid.getCheckedRows();
-			var gridArray = gridChecked.map(row => row.pdtNo)
-			//console.log(gridArray)
-			
-			//BOM그리드 선택
-			var bomGridChecked = bomGrid.getCheckedRows();
-			var bomGridArray = bomGridChecked.map(row => row.BOM_NO)
-			//console.log(bomGridArray)
-			
-			if(gridArray.length > 0 && bomGridArray.length > 0){
-				Swal.fire({
-				  icon: "warning",
-				  title: "동시에 2개 항목을 삭제 할 수 없습니다.",
-				});
-				return;
-			}
-			
-			if(gridArray.length > 0){
-				Swal.fire({
-					title: '선택된 제품을 삭제 하시겠습니까?',
-				   	text: '이 작업은 되돌릴 수 없습니다!',
-				  	icon: 'warning',
-				  	showCancelButton: true,
-				  	confirmButtonText: '확인',
-				  	cancelButtonText: '취소'
-				}).then((result) => {
-					
-					if (result.isConfirmed) {
-				    
-						$.ajax({
-							url: "/pdt/delItems",
-							type: "POST",
-							contentType: "application/json",
-							data: JSON.stringify(gridArray),
-							success: function(result){
-								if(result === "SUCCESS"){
-									//alert("success");
-									location.reload();
-								}
-							},
-							error: function(msg){
-								console.log("error:" + msg);
-							}//error
-						});//ajax
-				  	}//if
-				});//then
-			}//if문
-			
-			if(bomGridArray.length > 0){
+		//bom 검색 텍스트 박스
+		$('#bomSearhTxt').on('input', function(){
 				
-					Swal.fire({
-					title: '선택된 BOM 데이터를 삭제 하시겠습니까?',
-				   	text: '이 작업은 되돌릴 수 없습니다!',
-				  	icon: 'warning',
-				  	showCancelButton: true,
-				  	confirmButtonText: '확인',
-				  	cancelButtonText: '취소'
-				}).then((result) => {
-				  if (result.isConfirmed) {
-				    
-						$.ajax({
-							url: "/sales/delItems",
-							type: "POST",
-							contentType: "application/json",
-							data: JSON.stringify(bomGridArray),
-							success: function(result){
-								if(result === "SUCCESS"){
-									location.reload();
-								}
-							},
-							error: function(msg){
-								console.log("error:" + msg);
-							}//error
-						});//ajax
-				  	}//if
-				});//then
-			}//if문
+			let bomGridData = [...gridData2]
+			let searchText = $(this).val().toLowerCase();
 			
-			if(gridArray.length <= 0 && bomGridArray.length <= 0){
-				Swal.fire({
-				  icon: "warning",
-				  title: "선택된 항목이 없습니다.",
-				});
-				return;
-			}
-		})//$('#deleteBtn').on('click', function(){
-		*/
+			let filterGridData = bomGridData.filter(row => {
+				return Object.values(row).some(val => {
+					return String(val).toLowerCase().includes(searchText);
+				})
+			});
+			
+			bomGrid.resetData(filterGridData);
+		}); 
 		
 		//procusts와 bom 동시 삭제 
 		$('#delPdtBtn').on('click', function(){
+			
+			var checkedValue = grid.getCheckedRows();
+			console.log(checkedValue.length)
+			if(checkedValue.length > 1){
+
+				Swal.fire({
+				    icon: 'warning',
+				    title: '1개의 항목만 선택하세요',
+				    text: '삭제 실패',
+				});
+				
+				return;	
+			}
+			
+			if(checkedValue.length < 1){
+
+				Swal.fire({
+				    icon: 'warning',
+				    title: '선택된 항목이 없습니다.',
+				    text: '삭제 실패',
+				});
+				
+				return;	
+			}
+
+			
+			var checkedPdtNo = checkedValue.map(row => row.pdtNo)
+			
+			//checkbox는 1개만 선택 -> checkedPdtCode[0]
+			var checkedPdtCode = checkedValue.map(row => row.pdtCode)
+			
+			//선택된 제품에 해당하는 BOM에 상위코드가 있는지 체크
+			$.ajax({
+				url: '/pdt/checkBomChildCode',
+				type: 'GET',
+				data: {sendData: checkedPdtCode[0]},
+				success: function(result){
+					
+					if(result.length >= 1){
+						Swal.fire({
+						    icon: 'warning',
+						    title: '삭제 실패',
+						    html: '<b>BOM에 상위 코드가 존재합니다.</b><br>' + result
+						});	
+					}else if(result.length <= 0){
+						
+						
+						Swal.fire({
+				            title: '주의! BOM목록에서도 삭제됩니다',
+							html: '<b>'+checkedPdtCode[0]+'</b>코드 삭제',
+				            icon: 'warning',
+				            showCancelButton: true,
+				            confirmButtonText: '삭제',
+				            cancelButtonText: '아니오'
+				        }).then((result) => {
+				            if (result.isConfirmed) {
+				             	
+								//삭제 실행
+								$.ajax({
+									url: '/pdt/delItems',
+									type: 'POST',
+									data: {sendData: checkedPdtCode[0]},
+									success: function(result){
+										if(result === 'SUCCESS'){
+											Swal.fire({
+											    icon: 'info',
+											    title: '삭제 성공',
+											    html: '제품과 BOM에서 동시에 삭제 성공'
+											});	
+											
+											window.location.reload();
+										}
+									}, error: function(error){
+										console.log("pdt삭제 실행 error:" + error)
+									}
+								
+								})
+				            }
+				        });
+			
+					}
+					
+				}, error: function(error){
+					console.log('delPdtBtn error:' + error);
+				}
+				
+			})
+			
 			
 		}); //$('#delPdtBtn').on('click', function(){
 		
@@ -996,7 +1144,7 @@
 		//제품 등록 - 그리드에 row 추가
 		$('#registerPdtBtn').on('click', function(){
 			
-			pdtRegiCheck = true;
+			pdtRegiCheck = true; //제품 등록인 경우 수정을 막는다
 			
 			$('#delPdtBtn').hide();
 			$('#registerExePdtBtn').show();
@@ -1038,7 +1186,50 @@
 			
 			window.location.reload();
 		})
-	
+		
+		//BOM 전체 조회
+		$('#bomAllSearchBtn').on('click', () => {
+			
+			$.ajax({
+				url: '/bom/bomAll',
+				success: function(result){
+					bomGrid.resetData(result);
+					
+					gridData2 = result;
+				},error: function(error){
+					console.log(error);
+				}
+			});
+		})
+		
+		
+		//BOM 모달에서 등록 버튼
+		$('#bomRegExeBtn').on('click', () => {
+			
+			Swal.fire({
+	            title: 'BOM 등록을 저장하겠습니까?',
+	            icon: 'question',
+	            showCancelButton: true,
+	            confirmButtonText: 'BOM등록',
+	            cancelButtonText: '아니오'
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+					
+					sessionStorage.setItem("modalShown", "true");
+					
+	                $('#bomRegModalForm').submit();
+	            }
+	        });
+					
+			//$('#bomRegModal').modal('hide');
+			
+		});
+		
+		//BOM 등록 모달창에서 닫기
+		$('#bomRegCloseBtn').on('click', () => {
+			sessionStorage.removeItem('modalShown');
+		})
+		
 	});//$(document).ready(function(){
 	
 	//================================== JQuery 끝 =================================
@@ -1046,11 +1237,9 @@
 	//Grid data 유효성 검사
 	function registerGridDataCheck(inputData){
 				
-		console.log("==================registerGridDataCheck의 inputData==================")
-		console.log(inputData)
-		
 		let nullCheck = false;
 		
+		let pdtCodeName = false;
 		let pdtNo = false;
 		let pdtCode = false;
 		let pdtShippingPriceCheck = false;
@@ -1062,7 +1251,7 @@
 			//v를 전부 배열로 만들어서
 			for(const [key, value] of Object.entries(v)){
 				
-				console.log("key:" + key + " ,value:" + value);
+				//console.log("key:" + key + " ,value:" + value);
 				
 				if(key === 'pdtNo'){
 					if(!value){
@@ -1073,6 +1262,10 @@
 				if(key === 'pdtCode'){
 					if(!value){
 						pdtCode = true;
+					}else{
+						if(value.indexOf('WIP') < 0 && value.indexOf('FP') < 0 && value.indexOf('MTL') < 0){
+							pdtCodeName = true;
+						}
 					}
 				}
 				
@@ -1089,9 +1282,14 @@
 				}
 			
 				if(key === 'pdtSize' && value){ //길이 체크, 형식은 '숫자 x 숫자'만 가능
+					/*
 					let valueArray = value.split(/x/i);
 					
 					if(isNaN(valueArray[0]) || isNaN(valueArray[1])){
+						pdtSizeCheck = true;
+					}*/
+					
+					if(isNaN(value)){
 						pdtSizeCheck = true;
 					}
 				}
@@ -1109,6 +1307,13 @@
 		}else if(pdtCode){
 			alert("제품코드 입력은 필수입니다.");
 			return false;
+		}else if(pdtCodeName){
+			Swal.fire({
+		        icon: 'info',
+		        title: '제풐코드명 오류',
+		        text: '제품코드명은 WIP, FP, MTL 중 하나로 시작해야 합니다.',
+		    });
+			return;	
 		}else if(nullCheck){
 			alert("입력되지 않은 값이 있습니다.");
 			return false;
@@ -1145,53 +1350,71 @@
 		}));
 		
 		$.ajax({
-			url: '/bom/pdtRegister',
+			url: '/pdt/pdtRegister',
 			contentType: 'application/json',
 			type: 'POST',
 			data: JSON.stringify({data: filterInputData}),
 			//data: inputData,
 			success: function(result){
-				console.log(result);
 				
-				Swal.fire({
-			        icon: 'info',
-			        title: '성공',
-			        text: '데이터를 입력했습니다.',
-			    });
-
-				window.location.reload();
+				if(result === 'SUCCESS'){
+					Swal.fire({
+				        icon: 'info',
+				        title: '성공',
+				        text: '데이터를 입력했습니다.',
+				    });
+		
+					window.location.reload();
+				}else{
+					Swal.fire({
+				        icon: 'warning',
+				        title: '실패 : 제품코드 중복',
+				        html: '현재 FP의 최대값: ' + maxFP + '<br>현재 WIP의 최대값:' + maxWIP
+				    });
+				}
 			},
 			error: function(msg){
 				console.log("error:" + msg)
+				Swal.fire({
+			        icon: 'warning',
+			        title: '실패 : 제품코드 중복',
+			        html: '현재 FP의 최대값: ' + maxFP + '<br>현재 WIP의 최대값:' + maxWIP
+							
+			    });
 			}
 		});	
 	}
 	
 	//엑셀 파일 database에 저장
 	function registerExcelPdt(jsonData){
-		console.log(jsonData)
 		
 		$.ajax({
-			url: '/bom/pdtExcelRegister',
+			url: '/pdt/pdtExcelRegister',
 			contentType: 'application/json',
 			type: 'POST',
 			data: JSON.stringify({data: jsonData}),
-			//data: inputData,
 			success: function(result){
-				console.log(result);
-				
-				Swal.fire({
-			        icon: 'info',
-			        title: '성공',
-			        text: '데이터를 입력했습니다.',
-			    });
-	
-				window.location.reload();
+				if(result === 'SUCCESS'){
+					Swal.fire({
+				        icon: 'info',
+				        title: '성공',
+				        text: '데이터를 입력했습니다.',
+				    });
+		
+					window.location.reload();
+				}else{
+					Swal.fire({
+				        icon: 'warning',
+				        title: '실패 : 제품코드 중복',
+				        text: 'FP 또는 WIP 뒤에 숫자를 변경하세요',
+				    });
+				}
 			},
 			error: function(msg){
 				console.log("error:" + msg)
 			}
 		});	
+		
 		
 	}
   	</script>
