@@ -820,6 +820,9 @@
 				$('#emailTxt').val('');
 				$('#emailSelected').val('directInput');
 				$('#emailDomainTxt').val('');
+				$('#emailDomainTxt').removeAttr('readonly');
+				$('#emailDomainTxt').css('backgroundColor','white');
+				$('#emailDomainTxt').attr('placeholder', '도메인을 입력하세요');	
 			});
 			
 			//email 셀렉트 박스 변경시
@@ -858,11 +861,11 @@
 				}
 				
 				if($('#emailSelected').val() === 'directInput'){
-					if($('#emailDomainTxt').val().trim() === '' || $('#emailDomainTxt').val() === null)
-					alert("메일 도메인을 입력하세요");
-					return;
+					if($('#emailDomainTxt').val().trim() === '' || $('#emailDomainTxt').val() === null){
+						alert("메일 도메인을 입력하세요");
+						return;
+					}
 				}					
-				
 				
 				let emailName = $('#emailTxt').val();
 				let emailDomain;

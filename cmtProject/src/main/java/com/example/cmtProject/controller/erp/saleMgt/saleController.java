@@ -507,33 +507,6 @@ public class saleController {
 		//미리 컴파일된 jasper템플릿 compileReport, 리포트에 넘길 파라미터 map, 리포트에 넘길 데이터
 		JasperPrint report = JasperFillManager.fillReport(mainReport , map, mainDataSource);
 		
-		//------------------------ download에 다운 -----------------------------
-		//위에서 만들어진 report를 pdf로 저장
-		//String userHome = System.getProperty("java.io.tmpdir");
-		/*
-		//String userHome = System.getProperty("user.home");
-        String downloadsPath;
-
-        String os = System.getProperty("os.name").toLowerCase();
-        
-        if (os.contains("win")) {
-            downloadsPath = userHome + "\\Downloads\\invoice.pdf";
-        } else {
-            downloadsPath = userHome + "/Downloads/invoice.pdf";
-        }*/
-		
-        /*
-	     // 폴더 없으면 생성
-	     if (!downloadDir.exists()) {
-	         boolean created = downloadDir.mkdirs(); // mkdirs()는 중간 폴더도 생성 가능
-	         if (!created) {
-	             throw new IOException("다운로드 폴더 생성 실패: " + downloadsPath);
-	         }
-	     }
-			String userHome = System.getProperty("java.io.tmpdir");
-	        File downloadDir = new File(userHome, "invoice.pdf");
-	        // PDF 파일 저장
-	        JasperExportManager.exportReportToPdfFile(report, userHome);*/
 		String tempDir = System.getProperty("java.io.tmpdir");
 		File pdfFile = new File(tempDir, "invoice.pdf");
 
@@ -564,8 +537,6 @@ public class saleController {
 			boolean gmailCheck = false;
 			if(emailDomain.equals("gmail.com")) gmailCheck = true;
 				
-			System.out.println("emailDomain:"+emailDomain+ " , check:" + gmailCheck);
-			
 			//메일 서버 설정
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
@@ -575,7 +546,7 @@ public class saleController {
 			
 	        //사용자 인증
 	        String useremail = "cmtcorporation2025@gmail.com";
-	        String password = "aruq qbok gigk bzig";
+	        String password = "";
 	        
 	        Session session = Session.getInstance(props, new Authenticator() {
 	            protected PasswordAuthentication getPasswordAuthentication() {
