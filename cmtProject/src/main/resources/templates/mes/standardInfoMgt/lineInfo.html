@@ -20,24 +20,23 @@
 	    <div class="card-header">
 	        <h5 class="card-title">라인 목록</h5>
 	    </div>
+		
 	    <div class="card-body"> <!-- 여기에 내용작성 -->
 			<div class="row mb-3"> <!-- 검색박스 -->
-		        <!--<div class="col-md-3">
-		            <input type="month" class="form-control" placeholder="등록월">
-		        </div>-->
 		        <div class="col-md-4">
 		            <div class="input-group">
-		                <input type="text" class="form-control" placeholder="라인을 입력해주세요.">
+		                <input type="text" id="searchTxt" class="form-control" placeholder="라인을 입력해주세요.">
 		                <button class="btn btn-outline-secondary" type="button">
 		                    <i class="bi bi-search"></i>
 		                </button>
 		            </div>
 		        </div>
 		    </div><!-- /검색박스 -->
-		    <div class="text-end" sec:authorize="hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')"> <!-- 거래처등록 버튼 -->
+			
+		    <!--<div class="text-end" sec:authorize="hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')">  거래처등록 버튼 
 			    <button class="btn btn-primary btn-m" id="regeWork" data-bs-toggle="modal" data-bs-target="#workModal"><i class="fa-solid fa-person-walking-luggage"></i> 라인 등록</button>
 			    <button class="btn btn-outline-danger  btn-m" id="deleteClient" onclick="deleteClient()"><i class="fa-solid fa-trash-can"></i> 라인 삭제</button>
-			</div><!-- 라인 등록 버튼 -->
+			</div>--><!-- 라인 등록 버튼 -->
 			<hr>
 	    </div><!-- /card-body -->
 	</div><!-- /card -->
@@ -81,23 +80,27 @@
 	</div><!-- /모달 -->
 	
 	<script th:inline="javascript">
-		document.addEventListener("DOMContentLoaded", function () {
-	         // gridId가 pdtGrid라고 가정
-	         window.lineGrid.on('click', ev => {
+		
+		$(document).ready(function(){
+			
+			let OriginalGridData = lineGrid.getData();
+			
+			$('#searchTxt').on('input', function(){
+			 	
+				let gridData = OriginalGridData;
 				
-	             const rowKey = ev.rowKey;
-	             const rowData = window.lineGrid.getRow(rowKey);
-	
-	             if (rowData) {
-	                 let productCode = rowData.pdtCode; // 예: PDT_CODE 컬럼
-	                 console.log("선택된 제품코드:", productCode);
-	
-					 
-	                 // AJAX 요청으로 BOM 데이터 불러오기
-	                 
-	             }
-	         });
-	     });  
+				let searchText = $(this).val().toLowerCase();
+	 			
+	 			let filterGridData = gridData.filter(row => {
+	 				return Object.values(row).some(val => {
+	 					return String(val).toLowerCase().includes(searchText);
+	 				})
+	 			});
+	 			
+	 			lineGrid.resetData(filterGridData);
+	 		});
+			
+		});
 		
 	</script>
 	

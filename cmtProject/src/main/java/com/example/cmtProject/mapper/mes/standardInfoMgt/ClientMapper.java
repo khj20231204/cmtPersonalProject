@@ -15,4 +15,6 @@ public interface ClientMapper {
 
 	int deleteClientList(Long cltNo);
 
+	ClientsDTO selectClientByCltCode(String cltCode);
+
 }

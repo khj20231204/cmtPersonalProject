@@ -133,12 +133,10 @@
             AND SO.SO_STATUS = #{soStatus}
         </if>
         <if test="dateType == 'soDate' and startDate != null and endDate != null">
-		  AND SO.SO_DATE BETWEEN TO_DATE(#{startDate, jdbcType=VARCHAR}, 'YY-MM-DD')
-		                     AND TO_DATE(#{endDate, jdbcType=VARCHAR}, 'YY-MM-DD')
+		  AND TRUNC(SO.SO_DATE) BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="dateType == 'shipDate' and startDate != null and endDate != null">
-		  AND SO.SHIP_DATE BETWEEN TO_DATE(#{startDate, jdbcType=VARCHAR}, 'YY-MM-DD')
-		                     AND TO_DATE(#{endDate, jdbcType=VARCHAR}, 'YY-MM-DD')
+		  AND TRUNC(SO.SHIP_DATE) BETWEEN #{startDate} AND #{endDate}
 		</if>
     </where>
     ORDER BY SO.SO_NO DESC

@@ -1,15 +1,23 @@
 package com.example.cmtProject.controller.erp.saleMgt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,10 +30,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.cmtProject.controller.erp.saleMgt.commonModel.SalesOrderModels;
+import com.example.cmtProject.dto.erp.saleMgt.PdfFooterDTO;
+import com.example.cmtProject.dto.erp.saleMgt.PdfHeaderDTO;
+import com.example.cmtProject.dto.erp.saleMgt.PdfMainDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderEditDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderMainDTO;
 import com.example.cmtProject.dto.erp.saleMgt.SalesOrderSearchDTO;
+import com.example.cmtProject.dto.mes.standardInfoMgt.ClientsDTO;
 import com.example.cmtProject.entity.erp.employees.Employees;
 import com.example.cmtProject.entity.erp.salesMgt.SalesOrder;
 import com.example.cmtProject.repository.comm.CommonCodeDetailRepository;
@@ -35,13 +47,33 @@ import com.example.cmtProject.repository.erp.saleMgt.SalesOrderRepository;
 import com.example.cmtProject.repository.erp.saleMgt.SalesOrderStatusRepository;
 import com.example.cmtProject.repository.mes.standardInfoMgt.ProductsRepository;
 import com.example.cmtProject.service.erp.saleMgt.SalesOrderService;
+import com.example.cmtProject.service.mes.standardInfoMgt.ClientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Slf4j
 @Controller
@@ -65,6 +97,9 @@ public class saleController {
 	
 	@Autowired
 	private SalesOrderService salesOrderService;
+	
+	@Autowired
+	private ClientService clientService;
 	
 	@Autowired
 	private SalesOrderStatusRepository salesOrderStatusRepository;
@@ -93,7 +128,6 @@ public class saleController {
  		//========================= 하단 메인 list부분 ========================
  		//수주 메인 목록(clients, products, warehouses, employees 조인)
  		List<SalesOrderMainDTO> soMainList = salesOrderService.soMainSelect();
- 		log.info("soMainList:"+ soMainList);
  		
  		model.addAttribute("soMainList",soMainList);
  		//salesOrderModels로 clients와 products와 warehouses 데이터를 다 가져오기 때문에 이거 사용 안함
@@ -195,7 +229,6 @@ public class saleController {
 	    	
 	    	salesOrderModels.commonSalesOrderModels(model);
 	    	model.addAttribute("salesOrder", salesOrder);
-	    	
 	    	
 	    	log.error("Validation 오류 발생!"); 	
 	    	
@@ -300,7 +333,7 @@ public class saleController {
 	//수주 메인 화면에서 검색 버튼 클릭시 비동기 처리부분
 	@GetMapping("/searchForm")
 	@ResponseBody
-	//public List<SalesOrderMainDTO> searchForm(@RequestBody SalesOrderSearchDTO searchDto) {
+	//public void searchForm(@ModelAttribute SalesOrderSearchDTO searchDto) {
 	public List<SalesOrderMainDTO> searchForm(@ModelAttribute SalesOrderSearchDTO searchDto) {
 		
 		List<SalesOrderMainDTO> mainDtoList = salesOrderService.soMainSearch(searchDto);
@@ -395,5 +428,204 @@ public class saleController {
 		
 		return "erp/salesMgt/myPage";
 	}
+	
+	@PostMapping("/pdf")
+	@ResponseBody
+	public ResponseEntity<byte[]> generatedPdf(@RequestBody List<SalesOrderMainDTO> salesOrderMainDTO ) throws JRException, IOException {
+	//public void generatedPdf(@RequestBody List<SalesOrderMainDTO> salesOrderMainDTO ) throws FileNotFoundException, JRException{
+		
+		//pdfHeader
+		List<PdfHeaderDTO> pdfHeaderDtoList = new ArrayList<>();
+		PdfHeaderDTO pdfHeaderDto = new PdfHeaderDTO();
+		String cltCode = salesOrderMainDTO.get(0).getCltCode();
+		ClientsDTO clientsDto = clientService.selectClientByCltCode(cltCode);
+		
+		pdfHeaderDto.setCltName(clientsDto.getCltName());
+		pdfHeaderDto.setCltAddress(clientsDto.getCltAddress());
+		pdfHeaderDto.setCltManagerName(clientsDto.getCltManagerName());
+		pdfHeaderDto.setCltEmail(clientsDto.getCltEmail());
+		pdfHeaderDto.setCltPhone(clientsDto.getCltPhone());
+		
+		pdfHeaderDtoList.add(pdfHeaderDto);
+		
+		//pdfMain
+		List<PdfMainDTO> pdfMainDtoList = new ArrayList<>();
+		
+		int totalQty = 0;
+		int totalPrice = 0;
+		for(SalesOrderMainDTO s : salesOrderMainDTO) {
+			
+			PdfMainDTO pdfMainDto = new PdfMainDTO();
+			
+			pdfMainDto.setPdtName(s.getPdtName());
+			pdfMainDto.setSoDate(String.valueOf(s.getSoDate()));
+			pdfMainDto.setPdtPrice(s.getPdtPrice());
+			pdfMainDto.setSoQty(s.getSoQty());
+			
+			int qty = Integer.valueOf(s.getSoQty());
+			int price = Integer.valueOf(s.getPdtPrice());
+			int priceQtySum = qty * price;
+			
+			pdfMainDto.setPriceQtySum(String.valueOf(priceQtySum));
+			pdfMainDtoList.add(pdfMainDto);
+			
+			totalQty += qty;
+			totalPrice += price;
+		}
+		
+		//pdfFooter
+		List<PdfFooterDTO> pdfFooterDtoList = new ArrayList<>();
+		PdfFooterDTO pdfFooterDto = new PdfFooterDTO();
+		pdfFooterDto.setSoQtySum(String.valueOf(totalQty));
+		pdfFooterDto.setPdtPriceSum(String.valueOf(totalPrice));
+		pdfFooterDto.setTotalSum(String.valueOf(totalQty * totalPrice));
+		pdfFooterDtoList.add(pdfFooterDto);
+		
+		System.err.println("pdfFooterDtoList:" + pdfFooterDtoList);
+		
+		//Main
+		//DataSource 연결 - UserService에 Static으로 generateUserList 메소드가 있다
+		JRBeanCollectionDataSource mainDataSource = new JRBeanCollectionDataSource(pdfMainDtoList);
+		//연결할 JasperReport의 jrxml파일 경로
+		JasperReport mainReport  = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/soReportMain.jrxml"));
+		
+		//Header
+		JRBeanCollectionDataSource headerDataSource = new JRBeanCollectionDataSource(pdfHeaderDtoList);
+		JasperReport headerReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/soReportHeader.jrxml"));
+		
+		//Footer
+		JRBeanCollectionDataSource footerDataSource = new JRBeanCollectionDataSource(pdfFooterDtoList);
+		JasperReport footerReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/soReportFooter.jrxml"));
+		
+		// 메인 리포트에 헤더 파라미터에 전달
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("headerDataSource",headerDataSource);
+		map.put("headerReport",headerReport);
+		map.put("footerDataSource",footerDataSource);
+		map.put("footerReport",footerReport);
+		
+		//미리 컴파일된 jasper템플릿 compileReport, 리포트에 넘길 파라미터 map, 리포트에 넘길 데이터
+		JasperPrint report = JasperFillManager.fillReport(mainReport , map, mainDataSource);
+		
+		//------------------------ download에 다운 -----------------------------
+		//위에서 만들어진 report를 pdf로 저장
+		//String userHome = System.getProperty("java.io.tmpdir");
+		/*
+		//String userHome = System.getProperty("user.home");
+        String downloadsPath;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        
+        if (os.contains("win")) {
+            downloadsPath = userHome + "\\Downloads\\invoice.pdf";
+        } else {
+            downloadsPath = userHome + "/Downloads/invoice.pdf";
+        }*/
+		
+        /*
+	     // 폴더 없으면 생성
+	     if (!downloadDir.exists()) {
+	         boolean created = downloadDir.mkdirs(); // mkdirs()는 중간 폴더도 생성 가능
+	         if (!created) {
+	             throw new IOException("다운로드 폴더 생성 실패: " + downloadsPath);
+	         }
+	     }
+			String userHome = System.getProperty("java.io.tmpdir");
+	        File downloadDir = new File(userHome, "invoice.pdf");
+	        // PDF 파일 저장
+	        JasperExportManager.exportReportToPdfFile(report, userHome);*/
+		String tempDir = System.getProperty("java.io.tmpdir");
+		File pdfFile = new File(tempDir, "invoice.pdf");
+
+		// 디렉토리 생성 필요 없다 (java.io.tmpdir은 항상 존재)
+		JasperExportManager.exportReportToPdfFile(report, pdfFile.getAbsolutePath());
+
+        log.info("PDF 저장 위치: " + tempDir);
+
+		//-----------------------------------------------------------------------
+		
+		//HTTP응답으로 PDF를 직접 브라우저에 보여주기 위해서 byte로 변경
+		byte[] data = JasperExportManager.exportReportToPdf(report);
+		
+		//HTTP header 설정
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.CONTENT_DISPOSITION,"inline;filename=invoice.pdf");
+
+		//ResponseEntity.ok응답으로 보낸다, headers를, contentType은 MediaType.APPLICATION_PDF, 웹 페이지의 body에 data 출력
+		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
+	}
+	
+	@GetMapping("/email")
+	@ResponseBody
+	public String email(@RequestParam("emailAddr") String emailAddr, @RequestParam("emailDomain") String emailDomain){
+		
+		try {
+			
+			boolean gmailCheck = false;
+			if(emailDomain.equals("gmail.com")) gmailCheck = true;
+				
+			System.out.println("emailDomain:"+emailDomain+ " , check:" + gmailCheck);
+			
+			//메일 서버 설정
+			Properties props = new Properties();
+			props.put("mail.smtp.auth", "true");
+	        props.put("mail.smtp.starttls.enable", "true");
+	        props.put("mail.smtp.host", "smtp.gmail.com");
+	        props.put("mail.smtp.port", "587");
+			
+	        //사용자 인증
+	        String useremail = "cmtcorporation2025@gmail.com";
+	        String password = "aruq qbok gigk bzig";
+	        
+	        Session session = Session.getInstance(props, new Authenticator() {
+	            protected PasswordAuthentication getPasswordAuthentication() {
+	                return new PasswordAuthentication(useremail, password);
+	            }
+	        });
+	        
+	        // 이메일 구성
+	        Message message = new MimeMessage(session);
+	        message.setFrom(new InternetAddress(useremail));
+	        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailAddr));
+	        message.setSubject("PDF 파일 첨부 메일"); //제목
+	        
+	        //본문 파트
+	        MimeBodyPart textPart = new MimeBodyPart();
+	        if(gmailCheck) {
+	        	textPart.setText("Gmail은 보안상 PDF파일이 첨부되지 않습니다.");
+	        }else {
+	        	textPart.setText("첨부된 PDF파일을 확인해 주세요.");
+	        }
+	                
+	        //PDF파일 가져오기
+	        String tempDir = System.getProperty("java.io.tmpdir");
+			File pdfFile = new File(tempDir, "invoice.pdf");
+			
+	        //PDF첨부 파트
+	        MimeBodyPart mimePart = new MimeBodyPart();
+	        mimePart.attachFile(pdfFile);
+	        
+	        //미시지 결합
+	        Multipart multiPart = new MimeMultipart();
+	        multiPart.addBodyPart(textPart);
+	        if(!gmailCheck){
+	        	multiPart.addBodyPart(mimePart);
+	        }
+	        message.setContent(multiPart);
+	        
+	        //전송
+	        Transport.send(message);
+	        log.info("메일 전송 성공");
+	        
+			return "SUCCESS";
+		
+		} catch (IOException | MessagingException e) {
+	        e.printStackTrace();
+	        return "메일 전송 실패: 수주서 저장을 먼저 실행해주세요.";
+	    }
+	}
+	
+	
+	
 }
 

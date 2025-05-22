@@ -17,7 +17,10 @@
 	<!-- toast 부트스트랩 기본 --> 
 	<link rel="stylesheet" href="https://uicdn.toast.com/tui.grid/latest/tui-grid.css" /> 
  	<script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.min.js"></script> 
-		
+	
+	<!-- axios 사용 -->	
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	
 	<title>CMT</title>
 	<style>
 		
@@ -66,19 +69,28 @@
         cursor: pointer;
         border-radius: 3px;
     }
-    
-	/*
-    .tui-grid-container {
-     	width: 1700px !important; 
-    }
-	
-	.tui-grid-rside-area {
-		width: 1700px !important;
-	}*/
 	
 	.selecedRowClass {
 	    background-color:aliceblue !important;
 	    color: white;
+	 }
+	 
+	 #loading-overlay {
+		position: fixed;
+	   	top: 0;
+	   	left: 0;
+	   	width: 100%;
+	   	height: 100%;
+	   	background-color: rgba(0, 0, 0, 0.6); /* 반투명한 배경 */
+	   	display: none; /* 기본은 숨김 */
+	   	align-items: center;
+	   	justify-content: center;
+	   	z-index: 9999;
+	 }
+
+	.loading-content {
+		text-align: center;
+	   	color: white;
 	 }
 	
 	</style>
@@ -90,13 +102,12 @@
 			<div><h2>수주조회</h2></div>
 			<div>
 	        <!-- <button class="request" onclick="location.href='/sales/soregisterform'">📃 신규</button> -->
-			<button type="button" class="btn btn-primary" onclick="location.reload()" id="completeBtn">✏️현재 수정 모드</button>
+			<button type="button" class="btn btn-primary" onclick="location.reload()" id="completeBtn">✏️ 현재 수정 모드</button>
 	        <button type="button" class="btn btn-primary" id="searchBtn">🔍 검색</button>
 	        <button type="button" class="btn btn-primary" onclick="soRegisterOpenWindows()">📃 신규</button>
 			<button type="button" class="btn btn-primary" id="delBtn" onclick="soDelOpenWindows()">❎ 삭제</button>
-
-	        <!-- <button class="cancelBtn" onclick="soDelOpenWindows()">✏️ 수정</button> 
-				수정버튼을 눌러서 페이지를 넘기지 않고 자체에서 바로 수정을 함 -->
+	        <button type="button" class="btn btn-primary" id="pdfBtn">🖨️ 수주서 저장</button> 
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">📧 수주서 메일보내기</button>
 			</div>
 	    </div>
 		
@@ -170,8 +181,62 @@
 		<br>
 
 		<!-- grid 출력 태그 -->
-<!--	   	<div id="gridTop" style="width:1600px"></div>-->
 		<div id="gridTop"></div>
+		
+		<!-- email 모달 시작 -->
+		<div class="modal fade" id="emailModal" tabindex="-1" insert>
+		    <div class="modal-dialog" style="max-width: 40%;">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h5 class="modal-title" id="empModalLabel">수주서 이메일 전송</h5>
+		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		            </div>
+					<!-- form-row / form-item / form-group -->
+					
+					
+					<div style="margin: 20px;">
+						<div>
+						<label for="emailTxt">메일 입력</label>
+						<br>
+						<label for="emailTxt" style="color:red; font-size: 15px;">수주서 저장 버튼을 먼저 실행해 주세요.</label>
+						</div>
+						<br>
+						<div>
+						<input type="text" id="emailTxt" placeholder="메일 주소를 입력하세요"> @ 
+						<select id="emailSelected">
+			                <option value="directInput">-----직접입력----</option>
+							<option value="gmail.com">gmail.com(PDF파일 전송 불가)</option>
+							<option value="naver.com">naver.com</option>
+							<option vluae="nate.com">nate.com</option>
+							<option value="outlook.com">outlook.com</option>
+							<option vluae="hotmail.com">hotmail.com</option>
+			            </select>
+						<input type="text" id="emailDomainTxt" placeholder="도메인을 입력하세요">
+						</div>
+			        </div>
+					
+					
+					<br>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="sendEmailBtn">전송</button>
+	                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancleEmailBtn">취소</button>
+	                </div>
+		        </div> <!-- modal-content -->
+		    </div><!-- modal-dialog modal-lg -->
+		</div><!-- modal -->
+		<!-- 모달 끝 -->
+		
+		
+		<div id="loading-overlay">
+		  <div class="loading-content">
+			<div class="progress" style="width: 500px;">
+			  <div class="progress-bar" id="progressbar" role="progressbar" aria-label="Basic example" style="width: 0px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>
+		    <p>메일 전송 중입니다. 잠시만 기다려주세요...</p>
+		  </div>
+		</div>
+		
 		
 		<!-- 자바 스크립트 시작, jQuery 구문 포함 -->
 		<script src="/js/jquery-3.7.1.js"></script>
@@ -205,7 +270,11 @@
 	    //console.log('soMainList - ',/*[[${soMainList}]]*/ []);
 		
 		let gridData = /*[[${soMainList}]]*/ [];
-	    console.log(gridData)
+		
+		//pdf에서 값을 가져오는데 처음 로딩시 수정모드와 ajax로 불러오는 검색모드의 컬럼 대소문자가 다른다. 
+		//아무것도 모르는 팀원 ajax로 했을 때 대문자 스네이이크로 바꿔주는 설정을 했다.   
+		let modifySearchCheck = true; //true일 때 수정모드
+	    
 	    let grid = new tui.Grid({
 	        el: document.getElementById('gridTop'), 
 			//data : /*[[${soMainList}]]*/ [],
@@ -436,7 +505,7 @@
 		
 		//신규 버튼 클릭시 실행되는 입력 창
     	function soRegisterOpenWindows(){
-			window.open("/sales/soregisterform", "_blank", "toolbar=no, menubar=no, status=no, width=1100, height=650, resizable=no")	
+			window.open("/sales/soregisterform", "_blank", "toolbar=no, menubar=no, status=no, width=800, height=600, resizable=no")	
     	}
 		
 		//삭제 버튼 클릭시 실행되는 수정 창 - 현재 수정 버튼 사용하지 않음
@@ -489,17 +558,19 @@
 		//===================================== jQuery 시작 ===============================================
 		$(document).ready(function(){
 			
+			
 			//수정 버튼을 눌렀을 때 "현재 수정 모드"
 			//검색 버튼을 눌렀을 때 "현재 검색 모드"	로 변경하는 코드
 			//<button type="button" class="completeBtn" onclick="location.reload()">✏️ 수정</button>
 				       // <button type="button" class="searchBtn" id="searchBtn">🔍 검색</button>
 			$("#completeBtn").on('click', function(){
-				
+				modifySearchCheck = true;
 				$("#completeBtn").text("✏️현재 수정 모드")
 				$("#searchBtn").text("🔍 검색")
 			});
 			
 			$("#searchBtn").on('click', function(){
+				modifySearchCheck = false;
 				$("#completeBtn").text("✏️ 수정")
 				$("#searchBtn").text("🔍현재 검색 모드")
 			});
@@ -557,7 +628,12 @@
 				}
 				
 				var s = $("#soNo").val();
-				//console.log("----------------soNo:"+ s);
+				
+				/*
+				아무것도 모르는 팀원의 설정 때문에 컨트롤러부터 로딩은 카멜케이스,
+				ajax나 axios 비동기로부터 로딩은 스네이크로 표기가 됨. 
+				부득이하게 Grid를 새로 설정함 
+				*/
 				
 				//서버로 검색할 데이터 전송
 				$.ajax({
@@ -665,10 +741,267 @@
 					error: function(error){
 						alert("error msg:" + err)
 					}
+				});//$.ajax({
+			});//$("#searchBtn").on('click', function(){
+				
+			//pdf 버튼
+			$('#pdfBtn').on('click', function(){
+				const selectedRows = grid.getCheckedRows(); // 배열로 반환
+				
+				console.log(selectedRows)
+				
+				if(selectedRows.length === 0){
+					Swal.fire({
+						icon: "warning",
+					  	title: "선택 항목 없음",
+						text: "항목을 선택해 주세요"
+					});
+					
+					return;
+				}
+				
+				//거래처명만 가져오기
+				let cltCodeArray = selectedRows.map(v => {
+					
+					if(modifySearchCheck){  //수정모드
+						return v.cltCode;	
+					}else{
+						return v.CLT_CODE
+					}
+				})
+				
+				//거래처명이 일치하는지 check
+				let cltCodeCheck = cltCodeArray.every(v => v === cltCodeArray[0])
+				
+				if(cltCodeCheck){
+					
+					/*
+					convertSnakeToCamel 를 사용하게되면
+						cltCode -> cltcode, cltname, ... 로 변환
+						CLT_CODE -> cltCode, CLT_NAME -> cltName, ... 로 변환
+					*/
+					let camelCaseRows;
+					if(modifySearchCheck){ //수정모드인 경우 cltCode, cltName,... : 바로 출력
+						camelCaseRows = selectedRows;
+						
+					}else{  //검색모드인 경우 CLT_CODE, CLT_NAME,... : 변환
+						 camelCaseRows = selectedRows.map(row => convertSnakeToCamel(row));	
+					}
+					
+					console.log(camelCaseRows);
+					
+					axios.post('/sales/pdf', camelCaseRows, {
+					    responseType: 'blob',
+					    headers: {
+					        'Content-Type': 'application/json'
+					    }
+					}).then(response => {
+						
+					    const url = URL.createObjectURL(response.data);
+					    window.open(url);
+					}).catch(err => {
+					    console.error("PDF axios error:", err);
+					});
+					
+				}else{
+					Swal.fire({
+						icon: "warning",
+					  	title: "실패",
+						text: "거래처명은 모두 같아야 합니다."
+					});
+					
+					return;
+				}
+			});//$('#pdfBtn').on('click', function(){
+					
+			//email 모달 취소버튼
+			$('#cancleEmailBtn').on('click', function(){
+				
+				$('#emailTxt').val('');
+				$('#emailSelected').val('directInput');
+				$('#emailDomainTxt').val('');
+			});
+			
+			//email 셀렉트 박스 변경시
+			$('#emailSelected').on('change', function(){
+				
+				 if($('#emailSelected').val() === 'directInput'){
+					$('#emailDomainTxt').removeAttr('readonly')
+					$('#emailDomainTxt').css('backgroundColor','white');
+					$('#emailDomainTxt').attr('placeholder', '도메인을 입력하세요');	
+				 }else if($('#emailSelected').val() === 'gmail.com'){
+					
+					Swal.fire({
+						icon: "warning",
+					  	title: "gmail 전송 불가",
+						text: "gmail은 보안상 PDF파일이 점부되면 메일 전송이 되지않음"
+					});
+					
+					$('#emailDomainTxt').attr('readonly', true);
+					$('#emailDomainTxt').css('background-color','#CCCCFF');
+					$('#emailDomainTxt').attr('placeholder', '');
+					$('#emailDomainTxt').val('');
+				 }else{
+					$('#emailDomainTxt').attr('readonly', true);
+					$('#emailDomainTxt').css('background-color','#CCCCFF');
+					$('#emailDomainTxt').attr('placeholder', '');
+					$('#emailDomainTxt').val('');
+				 }
+			});
+			
+			////email 모달 전송버튼
+			$('#sendEmailBtn').on('click', function(){
+				
+				if($('#emailTxt').val().trim() === '' || $('#emailTxt').val() === null){
+					alert("메일주소를 입력하세요");
+					return;
+				}
+				
+				if($('#emailSelected').val() === 'directInput'){
+					if($('#emailDomainTxt').val().trim() === '' || $('#emailDomainTxt').val() === null)
+					alert("메일 도메인을 입력하세요");
+					return;
+				}					
+				
+				
+				let emailName = $('#emailTxt').val();
+				let emailDomain;
+				
+				if($('#emailSelected').val() === 'directInput'){
+					emailDomain = $('#emailDomainTxt').val();
+				}else{
+					emailDomain = $('#emailSelected').val();
+				}
+				
+				let emailAddr = emailName+'@'+emailDomain;
+				console.log(emailAddr);
+				
+				showLoading();
+											
+				let valuenow = parseInt($('#progressbar').attr('aria-valuenow'));
+				let width = parseInt($('#progressbar').css('width'));
+				let widthValue;
+				
+				let progressDiv = setInterval(()=>{
+					
+					widthValue = width+'px';
+					
+					$('#progressbar').attr('aria-valuenow', valuenow);
+					$('#progressbar').css('width', widthValue);
+					
+					if(valuenow > 140){
+						valuenow = -60;
+					}else{
+						valuenow += 20;
+					}
+					
+					if(width > 700){
+						width = -300;
+					}else{
+						width += 100;
+					}
+					
+				},300);
+				
+				
+				$.ajax({
+					url: '/sales/email',
+					type: 'GET',
+					data: {emailAddr: emailAddr, emailDomain: emailDomain},
+					success: function(result){
+						
+						if(result === 'SUCCESS'){
+							
+							setTimeout(() => {
+								clearInterval(progressDiv);
+								
+								hideLoading();
+								
+								Swal.fire({
+									icon: "info",
+								  	title: "성공",
+									text: "메일이 성공적으로 보내졌습니다."
+								});
+								
+								//텍스트 초기화
+								$('#cancleEmailBtn').trigger('click');
+								//모달 닫기
+								$('#emailModal').modal('hide');
+								//progressbar초기화
+								$('#progressbar').attr('aria-valuenow', 0);
+								$('#progressbar').css('width', '0px');
+								
+							}, 4000)
+							
+						}else if(result === 'FAIL'){
+							
+							setTimeout(() => {
+								clearInterval(progressDiv);
+								
+								hideLoading();
+								
+								Swal.fire({
+									icon: "warning",
+								  	title: "실패",
+									text: "수주서 저장을 먼저 실행해 주십시오."
+								});
+								
+								$('#cancleEmailBtn').trigger('click');
+								$('#emailModal').modal('hide');
+								
+							}, 4000)
+						}else{
+							setTimeout(() => {
+								clearInterval(progressDiv);
+								
+								hideLoading();
+								
+								Swal.fire({
+									icon: "warning",
+								  	title: "실패",
+									text: result
+								});
+								
+								$('#cancleEmailBtn').trigger('click');
+								$('#emailModal').modal('hide');
+								
+							}, 4000)
+						}
+						
+					}, error: function(error){
+						
+					}
 				});
 			});
-		})
+				
+		})//$(document).ready(function(){
 			
+		//스네이크를 다시 카멜로 변경
+		function toCamelCase(str) {
+			return str.toLowerCase().replace(/_([a-z])/g, (_, g1) => g1.toUpperCase());
+		}
+
+		function convertSnakeToCamel(obj) {
+			const newObj = {};
+		  	for (const key in obj) {
+		    	if (Object.hasOwn(obj, key)) {
+		      		const camelKey = toCamelCase(key);
+		      		newObj[camelKey] = obj[key];
+		    	}
+		  	}
+		  	return newObj;
+		}
+
+		//메일 전송시 progress show		
+		function showLoading() {
+			document.getElementById('loading-overlay').style.display = 'flex';
+		}
+
+		//메일 전송시 progress hide
+		function hideLoading() {
+		  	document.getElementById('loading-overlay').style.display = 'none';
+		}
+
 	</script>
 	</div> <!-- 여기 안에 있어야 modal, grid, script, jQuery 전부 작동 한다. 이 div는  <div layout:fragment="content"> fragment="content"이다 -->
 

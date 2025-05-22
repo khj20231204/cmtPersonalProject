@@ -23,4 +23,8 @@ public class ClientService {
 	public int deleteClient(Long cltNo) {
 		return clientMapper.deleteClientList(cltNo);
 	}
+
+	public ClientsDTO selectClientByCltCode(String cltCode) {
+		return clientMapper.selectClientByCltCode(cltCode);
+	}
 }

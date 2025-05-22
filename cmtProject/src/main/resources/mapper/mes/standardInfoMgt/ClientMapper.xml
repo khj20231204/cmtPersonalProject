@@ -35,7 +35,25 @@
     </insert>
 	
 	<select id="selectClientList" resultType="com.example.cmtProject.dto.mes.standardInfoMgt.ClientsDTO">
-		SELECT * FROM CLIENTS ORDER BY CLT_NO
+		SELECT 
+			CLT_POST_CODE
+			,REGI_DATE
+			,USE_YN
+			,CLT_NO
+			,CLT_ADDRESS
+			,CLT_ADDRESS2
+			,CLT_CODE
+			,CLT_COMMENTS
+			,CLT_EMAIL
+			,CLT_NAME
+			,CLT_PHONE
+			,CLT_PRC_TYPE
+			,CLT_TYPE
+			,CLIENT_TYPE
+			,CLT_OWNER_NAME
+			,CLT_MANAGER_NAME
+		FROM CLIENTS 
+	   ORDER BY CLT_NO
 	</select>
 	
 	<delete id="deleteClientList" parameterType="Long">
@@ -43,7 +61,27 @@
 		WHERE CLT_NO = #{cltNo}
 	</delete>
 	
+	<select id="selectClientByCltCode" resultType="com.example.cmtProject.dto.mes.standardInfoMgt.ClientsDTO">
+		 SELECT 
+	        CLT_NO           AS cltNo,
+	        CLT_CODE         AS cltCode,
+	        CLT_NAME         AS cltName,
+	        CLT_OWNER_NAME   AS cltOwnerName,
+	        CLT_MANAGER_NAME AS cltManagerName,
+	        CLT_PHONE        AS cltPhone,
+	        CLT_EMAIL        AS cltEmail,
+	        CLT_ADDRESS      AS cltAddress,
+	        CLT_ADDRESS2     AS cltAddress2,
+	        CLT_POST_CODE    AS cltPostCode,
+	        CLT_TYPE         AS cltType,
+	        CLT_PRC_TYPE     AS cltPrcType,
+	        CLT_COMMENTS     AS cltComments,
+	        CLIENT_TYPE      AS clientType,
+	        REGI_DATE        AS regiDate,
+	        USE_YN           AS useYn
+	     FROM CLIENTS 
+	    WHERE CLT_CODE = #{cltCode}
+	    ORDER BY CLT_NO
+	</select>
 	
-	
-
 </mapper>

@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="soReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="40065103-2783-48e1-b10e-9258b62cb429">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="Dataset1" uuid="2fcd6d1a-fb5c-4314-933c-a2115e7ccbfc">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="f2edfdf8-e0ed-4a70-9cc2-bb07413fd9c3">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="pdtName" class="java.lang.String"/>
+	<field name="soDate" class="java.sql.Date"/>
+	<field name="pdtPrice" class="java.lang.String"/>
+	<field name="soQty" class="java.lang.String"/>
+	<field name="priceQtySum" class="java.lang.String"/>
+	<field name="soQtySum" class="java.lang.String"/>
+	<field name="pdtPriceSum" class="java.lang.String"/>
+	<field name="totalSum" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="73" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="73" forecolor="#FFFFFF" backcolor="#575757" uuid="c77e375e-5aa1-4f29-9921-5ef6cefe1518"/>
+			</rectangle>
+			<image>
+				<reportElement x="505" y="43" width="50" height="30" uuid="8400b5f4-d464-41bc-a5e0-4e8052cb1dc6"/>
+				<imageExpression><![CDATA["C:/Users/natis/OneDrive/Desktop/cmt.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="167" y="0" width="220" height="73" forecolor="#FFFFFF" uuid="f26f9975-6864-4ed4-9747-d900cce4bb88"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" size="35" isBold="true"/>
+				</textElement>
+				<text><![CDATA[수 주 서]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="132" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<frame>
+				<reportElement x="0" y="12" width="280" height="90" uuid="d129de82-8d16-4e20-8c28-9a23cd0872d0"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#FFFFFF"/>
+				</box>
+				<rectangle>
+					<reportElement x="10" y="31" width="211" height="1" backcolor="#8C8C8C" uuid="7826a5d5-170c-4bac-8bd2-46ddd65cd873"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="41" y="2" width="149" height="30" uuid="2dd1d306-f63e-48d8-a309-5d93119d8f14"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="nanum" size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CMT 주식회사]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="39" width="58" height="21" uuid="dab4804f-63ca-467d-a2be-07147d14e4e9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="nanum"/>
+					</textElement>
+					<text><![CDATA[작성일자  : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="12" y="65" width="249" height="20" uuid="358f8b58-fdf6-4a30-bc23-d7ff72e52251"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="nanum" isBold="true"/>
+					</textElement>
+					<text><![CDATA[귀사의 발주에 따라 아래와 같이 수주 내용을 확인합니다.]]></text>
+				</staticText>
+				<textField pattern="yyyy년 MM월 dd일">
+					<reportElement x="71" y="39" width="121" height="21" uuid="52b2c673-3743-4bb2-b886-bd82c9046810"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="nanum"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement x="310" y="12" width="64" height="18" uuid="85c1c2b4-067a-45f4-950a-aa38b3488268"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<text><![CDATA[상 호]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="30" width="29" height="61" uuid="6939082d-2dbd-4040-b43a-9a5ceded9674"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="nanum" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[수   주   자]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="280" y="12" width="29" height="90" uuid="2eb2e819-f96a-4948-9b95-0363377f0d7e"/>
+			</rectangle>
+			<textField>
+				<reportElement x="374" y="12" width="181" height="18" uuid="0abe7beb-9854-4b42-860e-d08fe5df322c"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[  "Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="30" width="64" height="18" uuid="593e0430-a88b-4db5-ae00-a918801fa4b0"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<text><![CDATA[주 소]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="374" y="30" width="181" height="18" uuid="08ff95fc-39c4-4283-ac16-f9a4510fe6e9"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[  "Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="66" width="64" height="18" uuid="d8948bf5-2d17-4f7f-84dd-6c9a0004da73"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<text><![CDATA[EMAIL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="374" y="66" width="181" height="18" uuid="a8382d98-3d9c-446e-8094-0bb83e4ca25c"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[  "Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="48" width="64" height="18" uuid="ebde9fae-4332-4cb1-bdb8-1ef05f52de53"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<text><![CDATA[책임자]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="374" y="48" width="181" height="18" uuid="eb496311-5484-49c2-a83a-1e2d755ff7c6"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[  "Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="84" width="64" height="18" uuid="71cd1e7a-8106-4e8b-aada-d90e23e79acd"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<text><![CDATA[전화번호]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="374" y="84" width="181" height="18" uuid="35f15289-7526-476a-bf8a-d1ee798babfc"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[  "Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="110" width="150" height="21" uuid="8244db7a-a9b9-4ea8-a911-aad41f648e2d"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제 품 명]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="110" width="109" height="21" uuid="759a872f-e1f2-4111-aed0-7919fc217c5d"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[수주 일자]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="259" y="110" width="91" height="21" uuid="afbf1c78-61a7-44f4-94f6-3efd791844f7"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[단 가]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="110" width="90" height="21" uuid="0e1054b5-5708-4951-9a1d-e93be2747eaf"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[수 량]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="110" width="115" height="21" uuid="f8003643-1697-4666-8ae6-c58751a6b328"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[합 계]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="150" height="21" uuid="8dc3fd8d-f3e6-4fc9-9c76-e79f26744008"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pdtName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="109" height="21" uuid="2b137cb5-53f0-4b8c-b1f9-4c654ee33f89"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="259" y="0" width="91" height="21" uuid="6d246224-72ae-497c-9242-3ad4b2a08380"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pdtPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="0" width="90" height="21" uuid="4c2b42c1-47c8-4ecc-b4b7-ce035aebe040"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="0" width="115" height="21" uuid="d712e5eb-e819-49b3-9246-056a00f6329a"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{priceQtySum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="103" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="259" height="21" forecolor="#0D0D0D" backcolor="#C4C4C4" uuid="bffd9195-b5c0-450b-9125-b0bb9b3f5628"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#0D0D0D"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#0D0D0D"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#0D0D0D"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#0D0D0D"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[합   계]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="260" y="0" width="91" height="21" uuid="176eb15b-84f8-4223-ba26-2be6fe608d95"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soQtySum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="0" width="90" height="21" uuid="d0cbbd9b-6c8a-4817-b82c-452909fc3559"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pdtPriceSum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="0" width="115" height="21" uuid="4cd88f48-bd24-43a9-9b23-d75f06f2403b"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalSum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="21" width="259" height="21" uuid="341c7717-9030-4547-b7ff-716c416ffa6f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[납 기 일 자]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="21" width="295" height="21" uuid="e230d9be-9a83-48f5-ae37-1804a0347cc8"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="41" width="259" height="21" uuid="d52d9d64-0761-4f89-96e2-de2c5905fe30"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[납 품 장 소]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="41" width="295" height="21" uuid="88faefd0-0f44-4af1-8788-2aee2b1679fd"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="62" width="259" height="41" uuid="789ac9e1-cee9-410f-ac42-b855488c04ec"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[비     고]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="62" width="295" height="41" uuid="f90433a2-9442-44df-a9c5-a4f9f775a8c1"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="nanum" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+</jasperReport>

@@ -57,6 +57,9 @@ public class SalesOrderMainDTO {
 	// Status entity
 	private String statusCode;
 	private String statusName;
+	
+	//pdf에 출력할 변수들
+	//private String priceQtySum; //가격과 수량 계산 : row당 1개씩
 
 	// SalesOrderDTO를 생성
 	public static SalesOrderMainDTO fromSalesOrder(SalesOrder salesOrder, Clients clients, Products products,

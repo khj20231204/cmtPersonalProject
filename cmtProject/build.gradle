@@ -43,6 +43,17 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     
+	//JavaMail API
+	//implementation("jakarta.mail:jakarta.mail-api:2.0.1")
+	implementation("com.sun.mail:jakarta.mail:2.0.1")
+	// Angus Mail (실제 구현체, SPI 포함)
+	implementation("org.eclipse.angus:angus-mail:2.0.1")
+	
+	// Angus Activation (필수: StreamProvider 구현체 포함)
+	implementation("org.eclipse.angus:angus-activation:2.0.1")
+    // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+	//implementation 'com.sun.mail:javax.mail:1.6.2'
+    
     //spring validation 적용
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     
@@ -63,6 +74,11 @@ dependencies {
 	
 	//war파일을 생성 시 내장 톰킷 라이브러리 제오시키는 설정(외부 컴코새 배포를 위해)
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	
+    // https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports
+	 implementation 'net.sf.jasperreports:jasperreports:6.21.4'
+	// iText PDF 라이브러리 (JasperReports 6.21.4와 호환)
+	//implementation 'com.lowagie:itext:2.1.7'
 }
 
 tasks.named('test') {
